@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Asteroids.Powerups;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -66,7 +67,7 @@ namespace Asteroids
 
     public static void Draw(SpriteBatch batch)
     {
-      batch.DrawString(Font.MainFont,string.Format("Entities:{0}", entities.Count),new Vector2(20,70),Color.Green );
+      batch.DrawString(Font.MainFont, $"Entities:{entities.Count}",new Vector2(20,70),Color.Green );
       foreach (var entity in entities.OrderByDescending(p=>p.DrawPriority))
         entity.Draw(batch);
     }
@@ -109,8 +110,11 @@ namespace Asteroids
       {
         if (isColliding(Ship.Instance, powerUp))
         {
-          Ship.Instance.AddPowerup(powerUp);
-          powerUp.Active = true;
+          if (powerUp.IsActive())
+          {
+            Ship.Instance.AddPowerup(powerUp);
+            powerUp.Active = true;
+          }
           powerUp.WasCaptured();
         }
       }

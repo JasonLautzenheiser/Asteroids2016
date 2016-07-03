@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Asteroids.Powerups;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
@@ -41,6 +42,9 @@ namespace Asteroids
     SoundEffectInstance soundEffect;
     SoundEffect soundLaser;
 
+    public int ShieldsLeft => SHIELDS_PER_LIFE - shield_use;
+    public int MaxShields => SHIELDS_PER_LIFE;
+    public double ShieldTimeLeft => (int)(SHIELD_LENGTH - (DateTime.Now - shieldStart).TotalSeconds);
 
     private Ship()
     {
@@ -106,16 +110,16 @@ namespace Asteroids
 
       var elapsedTime = GameCore.GameTime.ElapsedGameTime;
 
-      if (isExtraLifeActive())
-      {
-        PlayerStatus.AddLife();
-        NewLifeParticles();
-        removeExtraLifePowerUp();
-      }
+//      if (isExtraLifeActive())
+//      {
+//        PlayerStatus.AddLife();
+//        NewLifeParticles();
+//        removeExtraLifePowerUp();
+//      }
 
       updateActivePowerups();
 
-      this.WrapPositionIfCrossing(GameCore.Instance.Window.ClientBounds);
+      if (GameCore.Instance.Window != null) this.WrapPositionIfCrossing(GameCore.Instance.Window.ClientBounds);
 
       var pad = InputManager.GetKeyboardInput();
       var touch = InputManager.ProcessTouchInput();

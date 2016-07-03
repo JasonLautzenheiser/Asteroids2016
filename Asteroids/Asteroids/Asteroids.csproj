@@ -57,8 +57,12 @@
     <Compile Include="ParticleManager.cs" />
     <Compile Include="ParticleState.cs" />
     <Compile Include="PlayerStatus.cs" />
-    <Compile Include="PowerUp.cs" />
-    <Compile Include="PowerUpSpawner.cs" />
+    <Compile Include="Powerups\ExtraLife.cs" />
+    <Compile Include="Powerups\Nuke.cs" />
+    <Compile Include="Powerups\PowerUp.cs" />
+    <Compile Include="Powerups\PowerUpSpawner.cs" />
+    <Compile Include="Powerups\Shield.cs" />
+    <Compile Include="Powerups\ThreeWayShooter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QuadTree.cs" />
@@ -87,6 +91,10 @@
     <None Include="Content\Sounds\ship_explode.wav" />
     <None Include="Content\rock.png" />
     <None Include="Content\ship.png" />
+    <Content Include="Content\Powerups\extralife-pu.png" />
+    <Content Include="Content\Powerups\multishot-pu.png" />
+    <Content Include="Content\Powerups\nuke-pu.png" />
+    <Content Include="Content\Powerups\shield-pu.png" />
     <Content Include="Icon.ico" />
   </ItemGroup>
   <ItemGroup>

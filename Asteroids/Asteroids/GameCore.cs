@@ -1,4 +1,5 @@
 ﻿using System;
+using Asteroids.Powerups;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -23,6 +24,8 @@ namespace Asteroids
     private KeyboardState lastState;
 
     private TimeSpan pausePosition;
+
+    public SpriteBatch GameSprite => spriteBatch;
 
     public GameCore()
     {
@@ -109,6 +112,21 @@ namespace Asteroids
       base.Update(gameTime);
     }
 
+    private string displayTextForShields()
+    {
+      string s = string.Empty;
+
+      if (Ship.Instance.AreShieldsUp)
+      {
+        s = $"Shields Left: {Ship.Instance.ShieldTimeLeft} secs";
+      }
+      else
+      {
+        s = $"Shields: {Ship.Instance.ShieldsLeft}";
+      }
+      return s;
+    }
+
     protected override void Draw(GameTime gameTime)
     {
       GraphicsDevice.Clear(Color.Black);
@@ -120,8 +138,8 @@ namespace Asteroids
       spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
       EntityManager.Draw(spriteBatch);
 
-
-      spriteBatch.DrawString(Font.MainFont, $"Lives: {PlayerStatus.Lives} / {PlayerStatus.MaxLives}", new Vector2(20, 10), Color.Aqua);
+      
+      spriteBatch.DrawString(Font.MainFont, $"Lives: {PlayerStatus.Lives} / {PlayerStatus.MaxLives}  {displayTextForShields()}", new Vector2(20, 10), Color.Aqua);
       spriteBatch.DrawString(Font.MainFont, $"Score: {PlayerStatus.Score}", new Vector2(20, 30), Color.Aqua);
 
       if (gamePaused)

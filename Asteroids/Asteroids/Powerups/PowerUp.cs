@@ -2,64 +2,82 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Asteroids
+namespace Asteroids.Powerups
 {
-  public class PowerUp : Entity
+  public abstract class PowerUp : Entity
   {
-    public PowerUpTypes Type { get; private set; }
-    private const int TIME_TO_LIVE = 10;
-    private const int TIME_FOR_ACTIVE = 15;
-    private readonly DateTime creationTime;
+    public PowerUpTypes Type { get; protected set; }
+    protected int TTL = 10;
+    protected int ActiveDuration = 15;
+    protected DateTime CreationTime;
     private DateTime activeTime;
-    public int PointValue { get; private set; }
+    protected int PointValue { get; set; }
     public bool Active { get; set; }
     public bool Expired { get; set; }
     private readonly Random rand=new Random();
 
-    private PowerUp(Texture2D texture, Vector2 position, PowerUpTypes type)
+    protected PowerUp()
     {
-      Type = type;
-      Position = position;
-      if (texture != null)
-      {
-        Radius = texture.Width / 2;
-        Texture = texture;
-      }
-      color = Color.White;
-      DrawPriority = 1;
-      creationTime = DateTime.Now;
-      PointValue = 5;
     }
 
-    public void WasCaptured()
+//    protected PowerUp(Texture2D texture, Vector2 position, PowerUpTypes type, int pointValue, bool activeState)
+//    {
+//      Type = type;
+//      Position = position;
+//      if (texture != null)
+//      {
+//        Radius = texture.Width / 2;
+//        Texture = texture;
+//      }
+//      color = Color.White;
+//      DrawPriority = 1;
+//      CreationTime = DateTime.Now;
+//      PointValue = pointValue;
+//      activeState = this.ActiveState;
+//    }
+
+    public virtual void WasCaptured()
     {
       Active = true;
       activeTime = DateTime.Now;
       Expired = false;
       ReadyToRemove = true;
       PlayerStatus.AddPoints(PointValue);
-
       capturedPowerUpParticles();
     }
 
-    public static Entity CreateExtraLife(Vector2 position)
-    {
-      var powerup = new PowerUp(Art.PowerUpLife, position, PowerUpTypes.ExtraLife);
-      return powerup;
-    }
+//    public abstract Entity Create(Vector2 position);
 
-    public static Entity CreateMultiShoot(Vector2 position)
-    {
-      var powerup = new PowerUp(Art.PowerUpThreeWay, position, PowerUpTypes.MultiShoot);
-      return powerup;
-    }
+//    public static Entity CreateExtraLife(Vector2 position)
+//    {
+//      var powerup = new Extra(Art.PowerUpLife, position, PowerUpTypes.ExtraLife,5, false);
+//      return powerup;
+//    }
+//
+//    public static Entity CreateMultiShoot(Vector2 position)
+//    {
+//      var powerup = new PowerUp(Art.PowerUpThreeWay, position, PowerUpTypes.MultiShoot,3, true);
+//      return powerup;
+//
+//    }
+//    public static Entity CreateNuke(Vector2 position)
+//    {
+//      var powerup = new PowerUp(Art.PowerUpNuke, position, PowerUpTypes.Nuke,20, false);
+//      return powerup;
+//    }
+//
+//    public static Entity CreateShield(Vector2 position)
+//    {
+//      var powerup = new PowerUp(Art.PowerUpShield, position, PowerUpTypes.Shield,3, false);
+//      return powerup;
+//    }
 
     public override void Update()
     {
       if (!Active)
       {
-        var elapsed = DateTime.Now - creationTime;
-        if (elapsed > TimeSpan.FromSeconds(TIME_TO_LIVE))
+        var elapsed = DateTime.Now - CreationTime;
+        if (elapsed > TimeSpan.FromSeconds(TTL))
         {
           uncapturedParticles();
           ReadyToRemove = true;
@@ -68,10 +86,15 @@ namespace Asteroids
       else
       {
         var elapsed = DateTime.Now - activeTime;
-        if (elapsed > TimeSpan.FromSeconds(TIME_FOR_ACTIVE))
+        if (elapsed > TimeSpan.FromSeconds(ActiveDuration))
+        {
+          ExpirationCallback();
           Expired = true;
+        }
       }
     }
+
+    protected abstract void ExpirationCallback();
 
     private void uncapturedParticles()
     {
@@ -115,5 +138,7 @@ namespace Asteroids
         GameCore.ParticleManager.CreateParticle(Art.Glow, Position + rand.NextVector2(2f, 3.3f), particleColor, 190, .1f, state);
       }
     }
+
+    public abstract bool IsActive();
   }
 }
