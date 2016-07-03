@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Asteroids.Powerups;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -94,7 +95,7 @@ namespace Asteroids
     {
       applyBehaviours();
 
-      this.WrapPositionIfCrossing(GameCore.Instance.Window.ClientBounds);
+      if (GameCore.Instance.Window != null) this.WrapPositionIfCrossing(GameCore.Instance.Window.ClientBounds);
 
       Position += Velocity;
 
