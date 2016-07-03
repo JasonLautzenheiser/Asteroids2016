@@ -1,5 +1,7 @@
 ﻿using System;
+using Asteroids.Managers;
 using Asteroids.Powerups;
+using Asteroids.TextEntities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -14,6 +16,8 @@ namespace Asteroids
     public static Vector2 ScreenSize => new Vector2(Viewport.Width, Viewport.Height);
     public static GameTime GameTime { get; private set; }
     public static ParticleManager<ParticleState> ParticleManager { get; private set; }
+    public static TextManager TextManager { get; private set; }
+
     Song song;
 
     private readonly GraphicsDeviceManager graphics;
@@ -40,9 +44,18 @@ namespace Asteroids
     protected override void Initialize()
     {
       base.Initialize();
-      base.Initialize();
 
       ParticleManager = new ParticleManager<ParticleState>(1024 * 20, ParticleState.UpdateParticle);
+      TextManager = new TextManager();
+
+      // setup static text entities
+      var lt = new LivesText(new Vector2(20, 10));
+      var sht = new ShieldsText(new Vector2(20,30));
+      var st = new ScoreText(new Vector2(20, 50));
+      TextManager.Add(lt);
+      TextManager.Add(sht);
+      TextManager.Add(st);
+
 
       quadTree = new QuadTree(0, GraphicsDevice.Viewport.Bounds);
 
@@ -78,22 +91,18 @@ namespace Asteroids
 
       KeyboardState keyboardState = Keyboard.GetState();
 
-      if (keyboardState.IsKeyDown(Keys.L) && lastState.IsKeyUp(Keys.L))
-      {
-        // test key to spawn life pill
-        PowerUpSpawner.Create(Ship.Instance.Position,PowerUpTypes.ExtraLife);
-      }
-
       if (keyboardState.IsKeyDown(Keys.P) && lastState.IsKeyUp(Keys.P))
       {
         gamePaused = !gamePaused;
         if (gamePaused)
         {
+          TextManager.Add(new PauseText(new Vector2(Viewport.Width / 2 - 65, 10)));
           pausePosition = MediaPlayer.PlayPosition;
           MediaPlayer.Stop();
         }
         else
         {
+          TextManager.Remove(typeof(PauseText));
           MediaPlayer.Play(song);
         }
       }
@@ -107,24 +116,10 @@ namespace Asteroids
         EnemySpawner.Update();
         ParticleManager.Update();
         PlayerStatus.Update();
+        TextManager.Update();
       }
 
       base.Update(gameTime);
-    }
-
-    private string displayTextForShields()
-    {
-      string s = string.Empty;
-
-      if (Ship.Instance.AreShieldsUp)
-      {
-        s = $"Shields Left: {Ship.Instance.ShieldTimeLeft} secs";
-      }
-      else
-      {
-        s = $"Shields: {Ship.Instance.ShieldsLeft}";
-      }
-      return s;
     }
 
     protected override void Draw(GameTime gameTime)
@@ -137,17 +132,10 @@ namespace Asteroids
 
       spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
       EntityManager.Draw(spriteBatch);
+      spriteBatch.End();
 
-      
-      spriteBatch.DrawString(Font.MainFont, $"Lives: {PlayerStatus.Lives} / {PlayerStatus.MaxLives}  {displayTextForShields()}", new Vector2(20, 10), Color.Aqua);
-      spriteBatch.DrawString(Font.MainFont, $"Score: {PlayerStatus.Score}", new Vector2(20, 30), Color.Aqua);
-
-      if (gamePaused)
-      {
-        spriteBatch.DrawString(Font.MainFont, "Game Paused", new Vector2(Viewport.Width / 2 - 65, 10), Color.Red);
-      }
-
-
+      spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+      TextManager.Draw(spriteBatch);
       spriteBatch.End();
 
       base.Draw(gameTime);

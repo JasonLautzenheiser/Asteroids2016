@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using Asteroids.Managers;
 using Asteroids.Powerups;
+using Asteroids.TextEntities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -86,6 +88,7 @@ namespace Asteroids
 
       if (!playerDeath)
       {
+        GameCore.TextManager.Add(new ActionScoreText(Position, PointValue.ToString()));
         PlayerStatus.AddPoints(PointValue);
         PowerUpSpawner.Update(Position);
       }

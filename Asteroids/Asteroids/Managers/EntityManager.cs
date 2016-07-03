@@ -4,7 +4,7 @@ using Asteroids.Powerups;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Asteroids
+namespace Asteroids.Managers
 {
   public static class EntityManager
   {
@@ -67,7 +67,7 @@ namespace Asteroids
 
     public static void Draw(SpriteBatch batch)
     {
-      batch.DrawString(Font.MainFont, $"Entities:{entities.Count}",new Vector2(20,70),Color.Green );
+//      batch.DrawString(Font.MainFont, $"Entities:{entities.Count}",new Vector2(20,70),Color.Green );
       foreach (var entity in entities.OrderByDescending(p=>p.DrawPriority))
         entity.Draw(batch);
     }

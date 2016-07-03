@@ -14,7 +14,7 @@ namespace Asteroids
     public Vector2 Direction;
     public float Radius { get; set; }
     public float Rotation { get; set; }
-    public bool ReadyToRemove { get; set; }
+    public virtual bool ReadyToRemove { get; set; }
     public float Mass { get; set; }
     public int DrawPriority { get; set; }
 
