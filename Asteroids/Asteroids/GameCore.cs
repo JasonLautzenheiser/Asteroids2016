@@ -114,12 +114,13 @@ namespace Asteroids
       spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
       EntityManager.Draw(spriteBatch);
 
-      spriteBatch.DrawString(Font.Arial20, string.Format("Lives: {0}", PlayerStatus.Lives), new Vector2(20, 10), Color.Aqua);
-      spriteBatch.DrawString(Font.Arial20, string.Format("Score: {0}", PlayerStatus.Score), new Vector2(20, 30), Color.Aqua);
+
+      spriteBatch.DrawString(Font.MainFont, $"Lives: {PlayerStatus.Lives} / {PlayerStatus.MaxLives}", new Vector2(20, 10), Color.Aqua);
+      spriteBatch.DrawString(Font.MainFont, $"Score: {PlayerStatus.Score}", new Vector2(20, 30), Color.Aqua);
 
       if (gamePaused)
       {
-        spriteBatch.DrawString(Font.Arial20, "Game Paused", new Vector2(Viewport.Width / 2 - 65, 10), Color.Red);
+        spriteBatch.DrawString(Font.MainFont, "Game Paused", new Vector2(Viewport.Width / 2 - 65, 10), Color.Red);
       }
 
 

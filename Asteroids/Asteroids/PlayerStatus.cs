@@ -2,10 +2,13 @@
 {
   public static class PlayerStatus
   {
-    public static int Lives { get; set; }
-    public static int Score { get; set; }
-    public static bool IsGameOver { get { return Lives == 0; } }
+    public static int Lives { get; private set; }
+    public static int Score { get; private set; }
+    public static bool IsGameOver => Lives == 0;
     private static int scoreForExtraLife;
+
+    private const int MAX_LIFE_INTERVAL = 100;
+    public const int MaxLives = 5;
 
     static PlayerStatus()
     {
@@ -20,8 +23,8 @@
     public static void Reset()
     {
       Score = 0;
-      Lives = 4;
-      scoreForExtraLife = 100;
+      Lives = MaxLives;
+      scoreForExtraLife = MAX_LIFE_INTERVAL;
     }
 
     public static void AddPoints(int basePoints)
@@ -31,8 +34,8 @@
       Score += basePoints;
       while (Score >= scoreForExtraLife)
       {
-        scoreForExtraLife += 100;
-        Lives++;
+        scoreForExtraLife += MAX_LIFE_INTERVAL;
+        AddLife();
         Ship.Instance.NewLifeParticles();
       }
     }
@@ -44,7 +47,8 @@
 
     public static void AddLife()
     {
-      Lives++;
+      if (Lives < MaxLives)
+        Lives++;
     }
   }
 }
