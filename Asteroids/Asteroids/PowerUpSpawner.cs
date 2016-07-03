@@ -17,13 +17,17 @@ namespace Asteroids
 
     public static void Update(Vector2 position)
     {
-//      if (Ship.Instance.IsDead || EntityManager.Count >= 20) return;
       if (EntityManager.PowerUpCount < 1 && rand.Next(EXTRA_LIFE_CHANCE) == 0)
         EntityManager.Add(PowerUp.CreateExtraLife(position));
 
       if (EntityManager.PowerUpCount < 1 && rand.Next(MULTI_SHOOT_CHANCE) == 0)
         EntityManager.Add(PowerUp.CreateMultiShoot(position));
 
+    }
+
+    public static void Create(Vector2 position, PowerUpTypes type)
+    {
+      EntityManager.Add(PowerUp.CreateExtraLife(position));
     }
   }
 }

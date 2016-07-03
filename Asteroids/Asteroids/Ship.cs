@@ -20,11 +20,13 @@ namespace Asteroids
     private const float MAX_THRUST = 100f;
     private const float MAX_VELOCITY = 340f;
     private const float FRICTION_FACTOR = 0.9f;
-    private const float SHIELD_LENGTH = 5f;
+    private const int SHIELDS_PER_LIFE = 3;
+    private const float SHIELD_LENGTH = 15f;
     private const float SHIELD_REGEN = 5f;
 
     private DateTime shieldStart;
     private DateTime shieldEnd;
+    private int shield_use = 0;
     private bool firstTimeShield = true;
 
     private float spin;
@@ -98,6 +100,7 @@ namespace Asteroids
         }
         Position = GameCore.ScreenSize / 2;
         Velocity = Vector2.Zero;
+        shield_use = 0;
         return;
       }
 
@@ -130,18 +133,21 @@ namespace Asteroids
         }
       }
 
+      // use shield
       if (pad.IsKeyDown(Keys.S))
       {
-        if (!AreShieldsUp)
-        {
-          var elapsed = DateTime.Now - shieldEnd;
-          if (elapsed > TimeSpan.FromSeconds(SHIELD_REGEN) || firstTimeShield)
+        if (shield_use < SHIELDS_PER_LIFE)
+          if (!AreShieldsUp)
           {
-            shieldStart = DateTime.Now;
-            AreShieldsUp = true;
-            firstTimeShield = false;
+            var elapsed = DateTime.Now - shieldEnd;
+            if (elapsed > TimeSpan.FromSeconds(SHIELD_REGEN) || firstTimeShield)
+            {
+              shield_use++;
+              shieldStart = DateTime.Now;
+              AreShieldsUp = true;
+              firstTimeShield = false;
+            }
           }
-        }
       }
 
       handleShields();
@@ -213,17 +219,6 @@ namespace Asteroids
       reset();
     }
 
-
-//    private IEnumerable<int> makeShields()
-//    {
-//      while (true)
-//      {
-//        Velocity += (Ship.Instance.Position - Position).ScaleTo(acceleration);
-//        if (Velocity != Vector2.Zero)
-//          Rotation = Velocity.ToAngle();
-//        yield return 0;
-//      }
-//    }
 
     private void makeShields()
     {

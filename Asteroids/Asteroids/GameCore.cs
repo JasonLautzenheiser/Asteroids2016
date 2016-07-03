@@ -75,6 +75,12 @@ namespace Asteroids
 
       KeyboardState keyboardState = Keyboard.GetState();
 
+      if (keyboardState.IsKeyDown(Keys.L) && lastState.IsKeyUp(Keys.L))
+      {
+        // test key to spawn life pill
+        PowerUpSpawner.Create(Ship.Instance.Position,PowerUpTypes.ExtraLife);
+      }
+
       if (keyboardState.IsKeyDown(Keys.P) && lastState.IsKeyUp(Keys.P))
       {
         gamePaused = !gamePaused;
