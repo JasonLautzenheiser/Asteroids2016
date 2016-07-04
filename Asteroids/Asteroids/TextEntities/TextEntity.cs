@@ -23,7 +23,27 @@ namespace Asteroids.TextEntities
     public DateTime DateOfCreation { get; set; } = DateTime.Now;
     public override bool ReadyToRemove { get; set; }
 
-    public override void Draw(SpriteBatch batch) => batch.DrawString(Font, GetText(), Position, Color);
+    private float mFadeDelay = 0.035f;
+    private float mAlphaValue = 1.0f;
+    private float mFadeIncrement = 0.05f;
+
+    public override void Draw(SpriteBatch batch) => batch.DrawString(Font, GetText(), Position, Color * mAlphaValue);
+
+    public override void Update()
+    {
+      if (TempText)
+      {
+        mFadeDelay -= (float)GameCore.GameTime.ElapsedGameTime.TotalSeconds;
+        Position -= new Vector2(0,1) * 2.0f;
+
+        if (mFadeDelay <= 0)
+        {
+          mFadeDelay = 0.035f;
+          mAlphaValue -= mFadeIncrement;
+        }
+      }
+      base.Update();
+    }
 
     protected abstract string GetText();
   }

@@ -9,9 +9,9 @@ namespace Asteroids.TextEntities
     {
       this.text = text;
       TempText = true;
-      TTL = 1.0;
+      TTL = 3.0;
       Position = position;
-      Color = Color.Orange;
+      Color = Color.Yellow;
     }
 
     protected override string GetText()

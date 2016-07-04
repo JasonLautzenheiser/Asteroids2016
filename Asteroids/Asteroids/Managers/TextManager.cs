@@ -3,6 +3,7 @@ using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using Asteroids.TextEntities;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Asteroids.Managers
