@@ -1,4 +1,5 @@
 ﻿using System;
+using Asteroids.Managers;
 using Microsoft.Xna.Framework;
 
 namespace Asteroids

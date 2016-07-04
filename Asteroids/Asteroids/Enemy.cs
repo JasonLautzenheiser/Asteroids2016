@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using Asteroids.Managers;
 using Asteroids.Powerups;
+using Asteroids.TextEntities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -14,11 +16,11 @@ namespace Asteroids
     public int PointValue { get; private set; }
     private readonly Random rand = new Random();
     private const int TIME_UNTIL_START = 0;
-    public bool IsActive { get { return TIME_UNTIL_START <= 0; } }
+    public bool IsActive => TIME_UNTIL_START <= 0;
 
     public const float MAX_VELOCITY = 5f;
 
-    public Enemy(Texture2D texture, Vector2 position)
+    public Enemy(Texture2D texture, Vector2 position, int pointValue)
     {
       Position = position;
       if (texture != null)
@@ -27,7 +29,7 @@ namespace Asteroids
         Texture = texture;
       }
       color = Color.White;
-      PointValue = 1;
+      PointValue = pointValue;
       DrawPriority = 1;
       Mass = 1f;
     }
@@ -86,6 +88,7 @@ namespace Asteroids
 
       if (!playerDeath)
       {
+        GameCore.TextManager.Add(new ActionScoreText(Position, PointValue.ToString()));
         PlayerStatus.AddPoints(PointValue);
         PowerUpSpawner.Update(Position);
       }
@@ -109,14 +112,14 @@ namespace Asteroids
 
     public static Enemy CreateWanderer(Vector2 position)
     {
-      var enemy = new Enemy(Art.Asteroid, position);
+      var enemy = new Enemy(Art.Asteroid, position,1);
       enemy.addBehaviour(enemy.moveRandomly());
       return enemy;
     }
 
     public static Entity CreateSeeker(Vector2 position)
     {
-      var enemy = new Enemy(Art.Asteroid, position);
+      var enemy = new Enemy(Art.Asteroid, position,2);
       enemy.addBehaviour(enemy.followPlayer(.05f));
       return enemy;
     }

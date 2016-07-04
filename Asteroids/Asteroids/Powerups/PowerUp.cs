@@ -1,4 +1,5 @@
 ﻿using System;
+using Asteroids.TextEntities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -42,6 +43,7 @@ namespace Asteroids.Powerups
       activeTime = DateTime.Now;
       Expired = false;
       ReadyToRemove = true;
+      GameCore.TextManager.Add(new ActionScoreText(Position, PointValue.ToString()));
       PlayerStatus.AddPoints(PointValue);
       capturedPowerUpParticles();
     }

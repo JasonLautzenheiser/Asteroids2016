@@ -44,7 +44,6 @@
     <Compile Include="Enemy.cs" />
     <Compile Include="EnemySpawner.cs" />
     <Compile Include="Entity.cs" />
-    <Compile Include="EntityManager.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Font.cs" />
     <Compile Include="FontRenderer.cs" />
@@ -53,8 +52,11 @@
     <Compile Include="GameObjectExtension.cs" />
     <Compile Include="InputManager.cs" />
     <Compile Include="Laser.cs" />
+    <Compile Include="Managers\EntityManager.cs" />
+    <Compile Include="Managers\IManager.cs" />
+    <Compile Include="Managers\ParticleManager.cs" />
+    <Compile Include="Managers\TextManager.cs" />
     <Compile Include="MathUtilities.cs" />
-    <Compile Include="ParticleManager.cs" />
     <Compile Include="ParticleState.cs" />
     <Compile Include="PlayerStatus.cs" />
     <Compile Include="Powerups\ExtraLife.cs" />
@@ -70,6 +72,12 @@
     <Compile Include="Ship.cs" />
     <Compile Include="SoundEffects.cs" />
     <Compile Include="Starfield.cs" />
+    <Compile Include="TextEntities\ActionScoreText.cs" />
+    <Compile Include="TextEntities\LivesText.cs" />
+    <Compile Include="TextEntities\PauseText.cs" />
+    <Compile Include="TextEntities\ScoreText.cs" />
+    <Compile Include="TextEntities\ShieldsText.cs" />
+    <Compile Include="TextEntities\TextEntity.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">

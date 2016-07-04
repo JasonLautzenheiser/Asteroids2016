@@ -2,9 +2,9 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Asteroids
+namespace Asteroids.Managers
 {
-  public class ParticleManager<T>
+  public class ParticleManager<T> 
   {
     private Action<Particle> updateParticle;
     private CircularParticleArray particleList;
@@ -72,7 +72,7 @@ namespace Asteroids
 
     public void Draw(SpriteBatch batch)
     {
-      batch.DrawString(Font.MainFont,string.Format("Particle Count:{0}", particleList.Count),new Vector2(10,50),Color.Green );
+//      batch.DrawString(Font.MainFont,string.Format("Particle Count:{0}", particleList.Count),new Vector2(10,50),Color.Green );
 
       for (int i=0;i<particleList.Count; i++)
       {
