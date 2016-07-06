@@ -1,4 +1,5 @@
 ﻿using System;
+using Asteroids.Entities;
 using Asteroids.TextEntities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;

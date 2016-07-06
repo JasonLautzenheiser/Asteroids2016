@@ -8,7 +8,7 @@ namespace Asteroids
 
     public static Color HSVToColor(float h, float s, float v)
     {
-      if (h == 0 && s == 0)
+      if (h == 0.0f && s == 0.0f)
         return new Color(v, v, v);
 
       float c = s*v;

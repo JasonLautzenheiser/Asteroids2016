@@ -1,4 +1,7 @@
-﻿namespace Asteroids
+﻿using Asteroids.Entities;
+using Asteroids.Entities.Player;
+
+namespace Asteroids
 {
   public static class PlayerStatus
   {

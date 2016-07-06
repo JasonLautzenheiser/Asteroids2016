@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
 
-namespace Asteroids
+namespace Asteroids.Entities.Player
 {
   public class Ship : Entity
   {

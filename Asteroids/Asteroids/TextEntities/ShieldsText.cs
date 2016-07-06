@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Asteroids.Entities;
+using Asteroids.Entities.Player;
+using Microsoft.Xna.Framework;
 
 namespace Asteroids.TextEntities
 {

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Asteroids.Entities;
+using Asteroids.Entities.Player;
 using Asteroids.Managers;
 using Microsoft.Xna.Framework;
 

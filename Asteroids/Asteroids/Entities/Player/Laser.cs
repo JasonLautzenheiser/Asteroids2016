@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace Asteroids
+namespace Asteroids.Entities.Player
 {
   public class Laser : Entity
   {

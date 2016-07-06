@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Asteroids.Entities;
+using Microsoft.Xna.Framework;
 
 namespace Asteroids
 {

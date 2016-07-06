@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Asteroids.Entities;
+using Asteroids.Entities.Enemies;
+using Asteroids.Entities.Player;
 using Asteroids.Powerups;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -130,6 +133,7 @@ namespace Asteroids.Managers
 
     private static bool isColliding(Entity a, Entity b)
     {
+      if (a.ReadyToRemove || b.ReadyToRemove) return false;
       float aRadius = a.Radius;
 
       if (a is Ship)
@@ -137,7 +141,7 @@ namespace Asteroids.Managers
           aRadius += 20;
          
       float radius = aRadius + b.Radius;
-      return !a.ReadyToRemove && !b.ReadyToRemove && Vector2.DistanceSquared(a.Position, b.Position) < radius*radius;
+      return Vector2.DistanceSquared(a.Position, b.Position) < radius*radius;
     }
   }
 }

@@ -1,4 +1,7 @@
 ﻿using System;
+using Asteroids.Entities;
+using Asteroids.Entities.Enemies;
+using Asteroids.Entities.Player;
 using Asteroids.Managers;
 using Microsoft.Xna.Framework;
 
@@ -15,10 +18,10 @@ namespace Asteroids
     {
       if (Ship.Instance.IsDead || EntityManager.Count >= maxEntityCount) return;
       if (rand.Next((int)inverseSpawnChance) == 0)
-        EntityManager.Add(Enemy.CreateWanderer(getSpawnPosition()));
+        EntityManager.Add(new Wanderer(getSpawnPosition()));
 
       if (rand.Next((int) inverseSpawnChance * (int)seekerChanceMultiplier) == 0)
-        EntityManager.Add(Enemy.CreateSeeker(getSpawnPosition()));
+        EntityManager.Add(new Seeker(getSpawnPosition()));
 
       if (seekerChanceMultiplier > 3)
         seekerChanceMultiplier -= 0.00001f;
