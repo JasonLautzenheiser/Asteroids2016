@@ -126,9 +126,9 @@ namespace Asteroids.Managers
     private static void killPlayer()
     {
       Ship.Instance.Kill();
-      enemies.ForEach(x=>x.PlayerDeath());
       PowerUps.ForEach(x=>x.ReadyToRemove=true);
       EnemySpawner.Reset();
+      enemies.ForEach(x => x.PlayerDeath());
     }
 
     private static bool isColliding(Entity a, Entity b)

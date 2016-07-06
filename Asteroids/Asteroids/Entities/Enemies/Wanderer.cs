@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using Asteroids.Managers;
+using Asteroids.Powerups;
+using Asteroids.TextEntities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -18,6 +21,47 @@ namespace Asteroids.Entities.Enemies
       Mass = 1f;
       Position = position;
       AddBehaviour(moveRandomly());
+    }
+
+    public override void WasShot(bool playerDeath = false)
+    {
+      ReadyToRemove = true;
+
+      //play explosion sound here.
+      var soundExplosion = SoundEffects.ExplodeAsteroid.CreateInstance();
+      soundExplosion.Volume = 0.1f;
+      soundExplosion.Play();
+
+      // give a little something for the kill
+      float hue1 = rand.NextFloat(0, 6);
+      float hue2 = (hue1 + rand.NextFloat(0, 2)) % 6f;
+      Color color1 = ColorUtil.HSVToColor(hue1, 0.5f, 1);
+      Color color2 = ColorUtil.HSVToColor(hue2, 0.5f, 1);
+
+      for (int i = 0; i < 120; i++)
+      {
+        float speed = 2f * (1f - 1 / rand.NextFloat(1f, 10f));
+        var state = new ParticleState
+        {
+          Velocity = rand.NextVector2(speed, speed),
+          Type = ParticleType.EnemyExplosion,
+          LengthMultiplier = 1f
+        };
+        Color particleColor = Color.Lerp(color1, color2, rand.NextFloat(0, 1));
+        GameCore.ParticleManager.CreateParticle(Art.LineParticle, Position, particleColor, 50, 0.5f, state);
+      }
+
+      if (!playerDeath)
+      {
+        // create two smaller wanderers
+        EntityManager.Add(new MiniWanderer(Position + new Vector2(rand.NextFloat(0, 1), rand.NextFloat(0,1))));
+        EntityManager.Add(new MiniWanderer(Position + new Vector2(rand.NextFloat(0, 1), rand.NextFloat(0, 1))));
+
+        GameCore.TextManager.Add(new ActionScoreText(Position, PointValue.ToString()));
+        PlayerStatus.AddPoints(PointValue);
+        PowerUpSpawner.Update(Position);
+      }
+      
     }
 
     private IEnumerable<int> moveRandomly()

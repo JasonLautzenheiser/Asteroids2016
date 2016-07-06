@@ -57,6 +57,7 @@
     <Compile Include="ColorUtil.cs" />
     <Compile Include="EnemySpawner.cs" />
     <Compile Include="Entities\Enemies\Enemy.cs" />
+    <Compile Include="Entities\Enemies\MiniWanderer.cs" />
     <Compile Include="Entities\Enemies\Seeker.cs" />
     <Compile Include="Entities\Enemies\Wanderer.cs" />
     <Compile Include="Entities\Entity.cs" />
@@ -116,6 +117,7 @@
     <Content Include="Content\Powerups\multishot-pu.png" />
     <Content Include="Content\Powerups\nuke-pu.png" />
     <Content Include="Content\Powerups\shield-pu.png" />
+    <Content Include="Content\rockSmall.png" />
     <Content Include="Icon.ico" />
   </ItemGroup>
   <ItemGroup>

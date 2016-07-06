@@ -20,8 +20,12 @@ namespace Asteroids
       if (rand.Next((int)inverseSpawnChance) == 0)
         EntityManager.Add(new Wanderer(getSpawnPosition()));
 
+//      if (rand.Next((int)inverseSpawnChance) == 0)
+//        EntityManager.Add(new MiniWanderer(getSpawnPosition()));
+
       if (rand.Next((int) inverseSpawnChance * (int)seekerChanceMultiplier) == 0)
         EntityManager.Add(new Seeker(getSpawnPosition()));
+
 
       if (seekerChanceMultiplier > 3)
         seekerChanceMultiplier -= 0.00001f;

@@ -18,28 +18,11 @@ namespace Asteroids.Entities.Enemies
     private const int TIME_UNTIL_START = 0;
     public bool IsActive => TIME_UNTIL_START <= 0;
 
-    public const float MAX_VELOCITY = 5f;
-
     protected Enemy()
     {
     }
 
-//    public Enemy(Texture2D texture, Vector2 position, int pointValue)
-//    {
-//      Position = position;
-//      if (texture != null)
-//      {
-//        Radius = texture.Width/2;
-//        Texture = texture;
-//      }
-//      color = Color.White;
-//      PointValue = pointValue;
-//      DrawPriority = 1;
-//      Mass = 1f;
-//    }
-
-
-    public void AddBehaviour(IEnumerable<int> behaviour)
+    protected void AddBehaviour(IEnumerable<int> behaviour)
     {
       behaviours.Add(behaviour.GetEnumerator());
     }
@@ -63,7 +46,9 @@ namespace Asteroids.Entities.Enemies
       WasShot(true);
     }
 
-    public void WasShot(bool playerDeath = false)
+
+
+    public virtual void WasShot(bool playerDeath = false)
     {
       ReadyToRemove = true;
 
@@ -79,7 +64,7 @@ namespace Asteroids.Entities.Enemies
 
       for (int i = 0; i < 120; i++)
       {
-        float speed = 18f*(1f - 1/rand.NextFloat(1f, 10f));
+        float speed = 2f*(1f - 1/rand.NextFloat(1f, 10f));
         var state = new ParticleState
                       {
                         Velocity = rand.NextVector2(speed, speed),
@@ -87,7 +72,7 @@ namespace Asteroids.Entities.Enemies
                         LengthMultiplier = 1f
                       };
         Color particleColor = Color.Lerp(color1, color2, rand.NextFloat(0, 1));
-        GameCore.ParticleManager.CreateParticle(Art.LineParticle, Position, particleColor,190,1.5f, state);
+        GameCore.ParticleManager.CreateParticle(Art.LineParticle, Position, particleColor,25,0.5f, state);
       }
 
       if (!playerDeath)
@@ -106,27 +91,12 @@ namespace Asteroids.Entities.Enemies
 
       Position += Velocity;
 
-//      Velocity *= 0.8f;
-
       base.Update();
 
       if (NoCollisionLife > 0)
         NoCollisionLife -= NoCollisionDecay*GameCore.GameTime.ElapsedGameTime.TotalSeconds;
     }
 
-//    public static Enemy CreateWanderer(Vector2 position)
-//    {
-//      var enemy = new Enemy(Art.Asteroid, position,1);
-//      enemy.addBehaviour(enemy.moveRandomly());
-//      return enemy;
-//    }
-
-//    public static Entity CreateSeeker(Vector2 position)
-//    {
-//      var enemy = new Enemy(Art.Asteroid, position,2);
-//      enemy.addBehaviour(enemy.followPlayer(.05f));
-//      return enemy;
-//    }
 
     public void HandleCollision(Entity other)
     {
@@ -156,14 +126,6 @@ namespace Asteroids.Entities.Enemies
         other.Velocity = MathUtilities.ClampVelocity(other.Velocity);
       }
     }
-
-
-    // behaviors
-
-
-
-
-
-
+    
   }
 }

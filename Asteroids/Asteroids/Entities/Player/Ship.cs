@@ -109,15 +109,6 @@ namespace Asteroids.Entities.Player
         return;
       }
 
-      var elapsedTime = GameCore.GameTime.ElapsedGameTime;
-
-//      if (isExtraLifeActive())
-//      {
-//        PlayerStatus.AddLife();
-//        NewLifeParticles();
-//        removeExtraLifePowerUp();
-//      }
-
       updateActivePowerups();
 
       if (GameCore.Instance.Window != null) this.WrapPositionIfCrossing(GameCore.Instance.Window.ClientBounds);
