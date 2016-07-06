@@ -1,41 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
-using Asteroids.Managers;
+using Asteroids.Entities.Player;
 using Asteroids.Powerups;
 using Asteroids.TextEntities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Asteroids
+namespace Asteroids.Entities.Enemies
 {
-  public class Enemy : Entity
+  public abstract class Enemy : Entity
   {
     public double NoCollisionDecay = 0.5;
     public double NoCollisionLife = 2;
     private readonly List<IEnumerator<int>> behaviours = new List<IEnumerator<int>>();
-    public int PointValue { get; private set; }
+    public int PointValue { get; set; }
     private readonly Random rand = new Random();
     private const int TIME_UNTIL_START = 0;
     public bool IsActive => TIME_UNTIL_START <= 0;
 
-    public const float MAX_VELOCITY = 5f;
-
-    public Enemy(Texture2D texture, Vector2 position, int pointValue)
+    protected Enemy()
     {
-      Position = position;
-      if (texture != null)
-      {
-        Radius = texture.Width/2;
-        Texture = texture;
-      }
-      color = Color.White;
-      PointValue = pointValue;
-      DrawPriority = 1;
-      Mass = 1f;
     }
 
-
-    private void addBehaviour(IEnumerable<int> behaviour)
+    protected void AddBehaviour(IEnumerable<int> behaviour)
     {
       behaviours.Add(behaviour.GetEnumerator());
     }
@@ -59,7 +46,9 @@ namespace Asteroids
       WasShot(true);
     }
 
-    public void WasShot(bool playerDeath = false)
+
+
+    public virtual void WasShot(bool playerDeath = false)
     {
       ReadyToRemove = true;
 
@@ -75,7 +64,7 @@ namespace Asteroids
 
       for (int i = 0; i < 120; i++)
       {
-        float speed = 18f*(1f - 1/rand.NextFloat(1f, 10f));
+        float speed = 2f*(1f - 1/rand.NextFloat(1f, 10f));
         var state = new ParticleState
                       {
                         Velocity = rand.NextVector2(speed, speed),
@@ -83,7 +72,7 @@ namespace Asteroids
                         LengthMultiplier = 1f
                       };
         Color particleColor = Color.Lerp(color1, color2, rand.NextFloat(0, 1));
-        GameCore.ParticleManager.CreateParticle(Art.LineParticle, Position, particleColor,190,1.5f, state);
+        GameCore.ParticleManager.CreateParticle(Art.LineParticle, Position, particleColor,25,0.5f, state);
       }
 
       if (!playerDeath)
@@ -102,27 +91,12 @@ namespace Asteroids
 
       Position += Velocity;
 
-//      Velocity *= 0.8f;
-
       base.Update();
 
       if (NoCollisionLife > 0)
         NoCollisionLife -= NoCollisionDecay*GameCore.GameTime.ElapsedGameTime.TotalSeconds;
     }
 
-    public static Enemy CreateWanderer(Vector2 position)
-    {
-      var enemy = new Enemy(Art.Asteroid, position,1);
-      enemy.addBehaviour(enemy.moveRandomly());
-      return enemy;
-    }
-
-    public static Entity CreateSeeker(Vector2 position)
-    {
-      var enemy = new Enemy(Art.Asteroid, position,2);
-      enemy.addBehaviour(enemy.followPlayer(.05f));
-      return enemy;
-    }
 
     public void HandleCollision(Entity other)
     {
@@ -136,7 +110,7 @@ namespace Asteroids
       Velocity += cofMass;
 
       Velocity += 100 * normal1 / (normal1.LengthSquared() + 1); 
-      Velocity = clampVelocity(Velocity);
+      Velocity = MathUtilities.ClampVelocity(Velocity);
       
 
       if (other.GetType() != typeof(Ship))
@@ -149,58 +123,9 @@ namespace Asteroids
         other.Velocity += cofMass;
 
         other.Velocity += 100 * normal2 / (normal2.LengthSquared() + 1);
-        other.Velocity = clampVelocity(other.Velocity);
+        other.Velocity = MathUtilities.ClampVelocity(other.Velocity);
       }
     }
-
-
-    // behaviors
-    private IEnumerable<int> followPlayer(float acceleration = 1f)
-    {
-      while (true)
-      {
-        Velocity += (Ship.Instance.Position - Position).ScaleTo(acceleration);
-        Velocity = clampVelocity(Velocity);
-        if (Velocity != Vector2.Zero)
-          Rotation = Velocity.ToAngle();
-        yield return 0;
-      }
-    }
-
-    private IEnumerable<int> moveRandomly()
-    {
-      float direction = rand.NextFloat(0, MathHelper.TwoPi);
-
-      while (true)
-      {
-        direction += rand.NextFloat(-0.1f, 0.1f);
-        direction = MathHelper.WrapAngle(direction);
-
-        for (int i = 0; i < 6; i++)
-        {
-          Velocity += MathUtilities.FromPolar(direction, 0.01f);
-          Velocity = clampVelocity(Velocity);
-          Rotation -= 0.05f;
-
-          var bounds = GameCore.Viewport.Bounds;
-          bounds.Inflate(-Texture.Width, -Texture.Height);
-
-          // if the enemy is outside the bounds, make it move away from the edge
-          if (!bounds.Contains(Position.ToPoint()))
-            direction = (GameCore.ScreenSize/2 - Position).ToAngle() + rand.NextFloat(-MathHelper.PiOver2, MathHelper.PiOver2);
-
-          yield return 0;
-        }
-      }
-    }
-
-    private static Vector2 clampVelocity(Vector2 velocity)
-    {
-      if (velocity.Length() > MAX_VELOCITY)
-        return Vector2.Normalize(velocity) * MAX_VELOCITY;
-      return velocity;
-    }
-
-
+    
   }
 }

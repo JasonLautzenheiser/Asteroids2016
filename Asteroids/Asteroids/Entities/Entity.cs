@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Asteroids
+namespace Asteroids.Entities
 {
   public abstract class Entity
   {

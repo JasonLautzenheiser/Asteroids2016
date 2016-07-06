@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Asteroids.Entities;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Asteroids.Managers
 {

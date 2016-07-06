@@ -1,4 +1,6 @@
 ﻿using System;
+using Asteroids.Entities;
+using Asteroids.Entities.Player;
 using Asteroids.Managers;
 using Asteroids.Powerups;
 using Asteroids.TextEntities;
@@ -23,7 +25,6 @@ namespace Asteroids
     private readonly GraphicsDeviceManager graphics;
     SpriteBatch spriteBatch;
 
-    QuadTree quadTree;
     private bool gamePaused;
     private KeyboardState lastState;
 
@@ -57,7 +58,7 @@ namespace Asteroids
       TextManager.Add(st);
 
 
-      quadTree = new QuadTree(0, GraphicsDevice.Viewport.Bounds);
+//      quadTree = new QuadTree(0, GraphicsDevice.Viewport.Bounds);
 
       EntityManager.Add(new Starfield());
       EntityManager.Add(Ship.Instance);

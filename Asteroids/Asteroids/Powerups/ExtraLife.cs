@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
+using Asteroids.Entities;
+using Asteroids.Entities.Player;
 using Microsoft.Xna.Framework;
 
 namespace Asteroids.Powerups

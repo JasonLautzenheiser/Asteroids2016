@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
 
-namespace Asteroids
+namespace Asteroids.Entities.Player
 {
   public class Ship : Entity
   {
@@ -108,15 +108,6 @@ namespace Asteroids
         shield_use = 0;
         return;
       }
-
-      var elapsedTime = GameCore.GameTime.ElapsedGameTime;
-
-//      if (isExtraLifeActive())
-//      {
-//        PlayerStatus.AddLife();
-//        NewLifeParticles();
-//        removeExtraLifePowerUp();
-//      }
 
       updateActivePowerups();
 
