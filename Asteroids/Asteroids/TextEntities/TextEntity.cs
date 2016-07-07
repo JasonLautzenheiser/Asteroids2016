@@ -16,6 +16,7 @@ namespace Asteroids.TextEntities
       Position = position;
     }
 
+    public string Name = "";
     protected Color Color = Color.White;
     protected SpriteFont Font = Asteroids.Font.MainFont;
     protected Vector2 Position { get; set; }

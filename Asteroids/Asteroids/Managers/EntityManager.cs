@@ -125,10 +125,13 @@ namespace Asteroids.Managers
 
     private static void killPlayer()
     {
-      Ship.Instance.Kill();
-      PowerUps.ForEach(x=>x.ReadyToRemove=true);
-      EnemySpawner.Reset();
-      enemies.ForEach(x => x.PlayerDeath());
+      if (!PlayerStatus.GodMode)
+      {
+        Ship.Instance.Kill();
+        PowerUps.ForEach(x=>x.ReadyToRemove=true);
+        EnemySpawner.Reset();
+        enemies.ForEach(x => x.PlayerDeath());
+      }
     }
 
     private static bool isColliding(Entity a, Entity b)

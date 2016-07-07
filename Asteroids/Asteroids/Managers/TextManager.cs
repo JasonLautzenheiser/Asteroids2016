@@ -71,5 +71,10 @@ namespace Asteroids.Managers
     {
       textEntities.RemoveAll(p => p.GetType() == typeToRemove);
     }
+
+    public void Remove(string nameToRemove)
+    {
+      textEntities.RemoveAll(p => p.Name == nameToRemove);
+    }
   }
 }

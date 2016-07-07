@@ -8,6 +8,7 @@ namespace Asteroids
     public static int Lives { get; private set; }
     public static int Score { get; private set; }
     public static bool IsGameOver => Lives == 0;
+    public static bool GodMode { get; set; } = false;
     private static int scoreForExtraLife;
 
     private const int MAX_LIFE_INTERVAL = 100;
