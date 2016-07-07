@@ -38,8 +38,8 @@ namespace Asteroids
       graphics = new GraphicsDeviceManager(this);
       Content.RootDirectory = "Content";
 
-      graphics.PreferredBackBufferWidth = 1280;
-      graphics.PreferredBackBufferHeight = 1024;
+      graphics.PreferredBackBufferWidth = 1024;
+      graphics.PreferredBackBufferHeight = 768;
     }
 
     protected override void Initialize()
@@ -87,12 +87,22 @@ namespace Asteroids
     {
       GameTime = gameTime;
 
-      if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+      KeyboardState state = Keyboard.GetState();
+
+      if (state.IsKeyDown(Keys.Escape))
         Exit();
 
-      KeyboardState keyboardState = Keyboard.GetState();
+      // God Mode
+      if (state.IsKeyDown(Keys.F12) && lastState.IsKeyUp(Keys.F12))
+      {
+        PlayerStatus.GodMode = !PlayerStatus.GodMode;
+        if (PlayerStatus.GodMode)
+          TextManager.Add(new GenericText("GodMode", new Vector2(Viewport.Width - 100, Viewport.Height - 20), "God Mode", Color.Red));
+        else
+          TextManager.Remove("GodMode");
+      }
 
-      if (keyboardState.IsKeyDown(Keys.P) && lastState.IsKeyUp(Keys.P))
+      if (state.IsKeyDown(Keys.P) && lastState.IsKeyUp(Keys.P))
       {
         gamePaused = !gamePaused;
         if (gamePaused)
@@ -108,7 +118,7 @@ namespace Asteroids
         }
       }
 
-      lastState = keyboardState;
+      lastState = state;
 
 
       if (!gamePaused)
@@ -119,6 +129,8 @@ namespace Asteroids
         PlayerStatus.Update();
         TextManager.Update();
       }
+
+
 
       base.Update(gameTime);
     }

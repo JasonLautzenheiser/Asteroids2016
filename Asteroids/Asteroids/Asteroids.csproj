@@ -87,6 +87,7 @@
     <Compile Include="Settings.cs" />
     <Compile Include="SoundEffects.cs" />
     <Compile Include="TextEntities\ActionScoreText.cs" />
+    <Compile Include="TextEntities\GenericText.cs" />
     <Compile Include="TextEntities\LivesText.cs" />
     <Compile Include="TextEntities\PauseText.cs" />
     <Compile Include="TextEntities\ScoreText.cs" />
