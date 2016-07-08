@@ -40,11 +40,15 @@ namespace Asteroids
 
       graphics.PreferredBackBufferWidth = 1024;
       graphics.PreferredBackBufferHeight = 768;
+//      graphics.SynchronizeWithVerticalRetrace = false;
     }
 
     protected override void Initialize()
     {
       base.Initialize();
+
+      IsFixedTimeStep = false;
+      
 
       ParticleManager = new ParticleManager<ParticleState>(1024 * 20, ParticleState.UpdateParticle);
       TextManager = new TextManager();
@@ -57,8 +61,12 @@ namespace Asteroids
       TextManager.Add(sht);
       TextManager.Add(st);
 
+      var fps = new FrameRateText(new Vector2(Viewport.Width - 100, 10));
+      TextManager.Add(fps);
 
-//      quadTree = new QuadTree(0, GraphicsDevice.Viewport.Bounds);
+
+
+      //      quadTree = new QuadTree(0, GraphicsDevice.Viewport.Bounds);
 
       EntityManager.Add(new Starfield());
       EntityManager.Add(Ship.Instance);

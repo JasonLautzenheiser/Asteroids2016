@@ -89,7 +89,7 @@ namespace Asteroids.Entities.Enemies
 
       if (GameCore.Instance.Window != null) this.WrapPositionIfCrossing(GameCore.Instance.Window.ClientBounds);
 
-      Position += Velocity;
+      Position += Velocity ;
 
       base.Update();
 
