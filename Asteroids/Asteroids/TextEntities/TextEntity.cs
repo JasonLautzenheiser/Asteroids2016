@@ -31,6 +31,7 @@ namespace Asteroids.TextEntities
 
     public override void Draw(SpriteBatch batch) => batch.DrawString(Font, GetText(), Position, Color * mAlphaValue);
 
+    
     public override void Update()
     {
       if (TempText)

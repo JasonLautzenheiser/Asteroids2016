@@ -87,6 +87,7 @@
     <Compile Include="Settings.cs" />
     <Compile Include="SoundEffects.cs" />
     <Compile Include="TextEntities\ActionScoreText.cs" />
+    <Compile Include="TextEntities\FrameRateText.cs" />
     <Compile Include="TextEntities\GenericText.cs" />
     <Compile Include="TextEntities\LivesText.cs" />
     <Compile Include="TextEntities\PauseText.cs" />
@@ -148,6 +149,9 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Utilities\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />
