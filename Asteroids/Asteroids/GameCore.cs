@@ -26,7 +26,6 @@ namespace Asteroids
     SpriteBatch spriteBatch;
 
     private bool gamePaused;
-    private KeyboardState lastState;
 
     private TimeSpan pausePosition;
 
@@ -38,13 +37,16 @@ namespace Asteroids
       graphics = new GraphicsDeviceManager(this);
       Content.RootDirectory = "Content";
 
-      graphics.PreferredBackBufferWidth = 1024;
-      graphics.PreferredBackBufferHeight = 768;
+      graphics.IsFullScreen = true;
+      graphics.PreferredBackBufferWidth = 1920;
+      graphics.PreferredBackBufferHeight = 1080;
 //      graphics.SynchronizeWithVerticalRetrace = false;
     }
 
     protected override void Initialize()
     {
+      InputManager.Initialize();
+
       base.Initialize();
 
       IsFixedTimeStep = false;
@@ -97,17 +99,13 @@ namespace Asteroids
     {
       GameTime = gameTime;
 
+      InputManager.Update();
 
-
-
-
-      KeyboardState state = InputManager.GetKeyboardInput();
-
-      if (state.IsKeyDown(Keys.Escape))
+      if (InputManager.IsActionTriggered(InputManager.Action.ExitGame))
         Exit();
 
       // God Mode
-      if (state.IsKeyDown(Keys.F12) && lastState.IsKeyUp(Keys.F12))
+      if (InputManager.IsActionTriggered(InputManager.Action.GodMode))
       {
         PlayerStatus.GodMode = !PlayerStatus.GodMode;
         if (PlayerStatus.GodMode)
@@ -116,12 +114,12 @@ namespace Asteroids
           TextManager.Remove("GodMode");
       }
 
-      if (state.IsKeyDown(Keys.F1) && lastState.IsKeyUp(Keys.F1))
-      {
-        PowerUpSpawner.Create(new Vector2(Viewport.Width / 2 - 65, 80), PowerUpTypes.Nuke);
-      }
+      //      if (state.IsKeyDown(Keys.F1) && lastState.IsKeyUp(Keys.F1))
+      //      {
+      //        PowerUpSpawner.Create(new Vector2(Viewport.Width / 2 - 65, 80), PowerUpTypes.Nuke);
+      //      }
 
-      if (state.IsKeyDown(Keys.P) && lastState.IsKeyUp(Keys.P))
+      if (InputManager.IsActionTriggered(InputManager.Action.Pause))
       {
         gamePaused = !gamePaused;
         if (gamePaused)
@@ -136,9 +134,6 @@ namespace Asteroids
           MediaPlayer.Play(song);
         }
       }
-
-      lastState = state;
-
 
       if (!gamePaused)
       {

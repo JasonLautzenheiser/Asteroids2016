@@ -105,18 +105,18 @@ namespace Asteroids.Entities.Player
 
       if (GameCore.Instance.Window != null) this.WrapPositionIfCrossing(GameCore.Instance.Window.ClientBounds);
 
-      var pad = InputManager.GetKeyboardInput();
-      var touch = InputManager.ProcessTouchInput();
+      //      var pad = InputManager.GetKeyboardInput();
+      //      var touch = InputManager.ProcessTouchInput();
 
-      if (PlayerStatus.GodMode)
-        if (pad.IsKeyDown(Keys.L))
-        {
-          PlayerStatus.AddLife();
-          NewLifeParticles();
-        }
+      //      if (PlayerStatus.GodMode)
+      //        if (pad.IsKeyDown(Keys.L))
+      //        {
+      //          PlayerStatus.AddLife();
+      //          NewLifeParticles();
+      //        }
 
 
-      if (pad.IsKeyDown(Keys.Space) || touch == GestureType.Tap)
+      if (InputManager.IsActionPressed(InputManager.Action.Fire))
       {
         if (FireLaser())
         {
@@ -126,7 +126,7 @@ namespace Asteroids.Entities.Player
       }
 
       // use nuke
-      if (pad.IsKeyDown(Keys.N) && lastState.IsKeyUp(Keys.N))
+      if (InputManager.IsActionTriggered(InputManager.Action.Nuke))
       {
         if (PlayerStatus.Nukes > 0)
         {
@@ -136,7 +136,7 @@ namespace Asteroids.Entities.Player
       }
 
       // use shield
-      if (pad.IsKeyDown(Keys.S))
+      if (InputManager.IsActionTriggered(InputManager.Action.Shield))
       {
         if (PlayerStatus.ShieldsLeft > 0)
           if (!AreShieldsUp)
@@ -153,19 +153,14 @@ namespace Asteroids.Entities.Player
       }
 
       handleShields();
-      handleThrust(pad);
-      handleRotation(pad,GameCore.GameTime.ElapsedGameTime);
+      handleThrust();
+      handleRotation(GameCore.GameTime.ElapsedGameTime);
  
       Acceleration = (Math.Abs(thrust - 0) > 0.001f) ? applyThrust(thrust) : applyFriction();
 
       base.Update();
 
-      if (pad.IsKeyDown(Keys.Up) || pad.IsKeyDown(Keys.Down))
-        makeExhaustFire();
-
       clampVelocity();
-
-      lastState = pad;
 
     }
 
@@ -312,12 +307,18 @@ namespace Asteroids.Entities.Player
     }
 
 
-    private void handleThrust(KeyboardState pad)
+    private void handleThrust()
     {
-      if (pad.IsKeyDown(Keys.Up))
+      if (InputManager.IsActionPressed(InputManager.Action.Thrust))
+      {
         thrust += 0.05f;
-      else if (pad.IsKeyDown(Keys.Down))
+        makeExhaustFire();
+      }
+      else if (InputManager.IsActionPressed(InputManager.Action.Brake))
+      {
         thrust -= 0.05f;
+        makeExhaustFire();
+      }
       else
         thrust *= 0.1f;
 
@@ -330,11 +331,11 @@ namespace Asteroids.Entities.Player
       }
     }
 
-    private void handleRotation(KeyboardState pad, TimeSpan elapsedTime)
+    private void handleRotation( TimeSpan elapsedTime)
     {
-      if (pad.IsKeyDown(Keys.Right))
+      if (InputManager.IsActionPressed(InputManager.Action.RotateRight))
         spin -= 0.1f;
-      else if (pad.IsKeyDown(Keys.Left))
+      else if (InputManager.IsActionPressed(InputManager.Action.RotateLeft))
         spin += 0.1f;
       else
         spin *= 0.9f;
