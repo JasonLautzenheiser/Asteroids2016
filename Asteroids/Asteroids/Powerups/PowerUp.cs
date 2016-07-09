@@ -16,7 +16,7 @@ namespace Asteroids.Powerups
     protected int PointValue { get; set; }
     public bool Active { get; set; }
     public bool Expired { get; set; }
-    private readonly Random rand=new Random();
+    protected readonly Random rand=new Random();
 
     protected PowerUp()
     {
@@ -46,7 +46,8 @@ namespace Asteroids.Powerups
       ReadyToRemove = true;
       GameCore.TextManager.Add(new ActionScoreText(Position, PointValue.ToString()));
       PlayerStatus.AddPoints(PointValue);
-      capturedPowerUpParticles();
+
+//      capturedPowerUpParticles();
     }
 
 //    public abstract Entity Create(Vector2 position);
@@ -121,24 +122,18 @@ namespace Asteroids.Powerups
       }
     }
 
-    private void capturedPowerUpParticles()
+    protected void CapturedPowerUpParticles(Color color)
     {
-      float hue1 = rand.NextFloat(0, 6);
-      float hue2 = (hue1 + rand.NextFloat(0, 2))%6f;
-      Color color1 = ColorUtil.HSVToColor(hue1, 0.5f, 1);
-      Color color2 = ColorUtil.HSVToColor(hue2, 0.5f, 1);
-
       for (int i = 0; i < 120; i++)
       {
-        float speed = 2*(1f - 1/rand.NextFloat(1f, 10f));
+        float speed = 2 * (1f - 1 / rand.NextFloat(1f, 10f));
         var state = new ParticleState
-                      {
-                        Velocity = rand.NextVector2(speed, speed),
-                        Type = ParticleType.EnemyExplosion,
-                        LengthMultiplier = 0.2f
-                      };
-        Color particleColor = Color.Lerp(color1, color2, rand.NextFloat(0, 1));
-        GameCore.ParticleManager.CreateParticle(Art.Glow, Position + rand.NextVector2(2f, 3.3f), particleColor, 190, .1f, state);
+        {
+          Velocity = rand.NextVector2(speed, speed),
+          Type = ParticleType.EnemyExplosion,
+          LengthMultiplier = 0.2f
+        };
+        GameCore.ParticleManager.CreateParticle(Art.Glow, Position + rand.NextVector2(2f, 3.3f), color, 190, .1f, state);
       }
     }
 

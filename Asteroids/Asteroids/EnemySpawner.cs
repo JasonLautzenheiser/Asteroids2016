@@ -13,10 +13,15 @@ namespace Asteroids
     private static float inverseSpawnChance = 90;
     private static float maxEntityCount = 20;
     private static float seekerChanceMultiplier = 6;
+    private static bool pause = false;
+    private static float fStartDelay = 0.5f;
 
     public static void Update()
     {
-      if (Ship.Instance.IsDead || EntityManager.Count >= maxEntityCount) return;
+      fStartDelay -= (float)GameCore.GameTime.ElapsedGameTime.TotalSeconds;
+      if (fStartDelay > 0) return;
+
+      if (Ship.Instance.IsDead || EntityManager.Count >= maxEntityCount || pause) return;
       if (rand.Next((int)inverseSpawnChance) == 0)
         EntityManager.Add(new Wanderer(getSpawnPosition()));
 
@@ -49,9 +54,16 @@ namespace Asteroids
 
     public static void Reset()
     {
-      inverseSpawnChance = 60;
+      fStartDelay = 1.5f;
+      inverseSpawnChance = 90;
       maxEntityCount = 20;
       seekerChanceMultiplier = 6;
+      pause = false;
+    }
+
+    public static void Pause()
+    {
+      pause = true;
     }
   }
 }

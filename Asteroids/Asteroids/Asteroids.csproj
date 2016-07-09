@@ -90,6 +90,7 @@
     <Compile Include="TextEntities\FrameRateText.cs" />
     <Compile Include="TextEntities\GenericText.cs" />
     <Compile Include="TextEntities\LivesText.cs" />
+    <Compile Include="TextEntities\NukeText.cs" />
     <Compile Include="TextEntities\PauseText.cs" />
     <Compile Include="TextEntities\ScoreText.cs" />
     <Compile Include="TextEntities\ShieldsText.cs" />

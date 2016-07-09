@@ -55,11 +55,13 @@ namespace Asteroids
 
       // setup static text entities
       var lt = new LivesText(new Vector2(20, 10));
-      var sht = new ShieldsText(new Vector2(20,30));
-      var st = new ScoreText(new Vector2(20, 50));
+      var sht = new ShieldsText(new Vector2(20,50));
+      var st = new ScoreText(new Vector2(20, 30));
+      var nt = new NukeText(new Vector2(20, 70));
       TextManager.Add(lt);
       TextManager.Add(sht);
       TextManager.Add(st);
+      TextManager.Add(nt);
 
       var fps = new FrameRateText(new Vector2(Viewport.Width - 100, 10));
       TextManager.Add(fps);
@@ -95,7 +97,11 @@ namespace Asteroids
     {
       GameTime = gameTime;
 
-      KeyboardState state = Keyboard.GetState();
+
+
+
+
+      KeyboardState state = InputManager.GetKeyboardInput();
 
       if (state.IsKeyDown(Keys.Escape))
         Exit();
@@ -108,6 +114,11 @@ namespace Asteroids
           TextManager.Add(new GenericText("GodMode", new Vector2(Viewport.Width - 100, Viewport.Height - 20), "God Mode", Color.Red));
         else
           TextManager.Remove("GodMode");
+      }
+
+      if (state.IsKeyDown(Keys.F1) && lastState.IsKeyUp(Keys.F1))
+      {
+        PowerUpSpawner.Create(new Vector2(Viewport.Width / 2 - 65, 80), PowerUpTypes.Nuke);
       }
 
       if (state.IsKeyDown(Keys.P) && lastState.IsKeyUp(Keys.P))

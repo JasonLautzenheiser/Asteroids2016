@@ -43,12 +43,12 @@ namespace Asteroids.Entities.Enemies
 
     public void PlayerDeath()
     {
-      WasShot(true);
+      WasShot(true,false);
     }
 
 
 
-    public virtual void WasShot(bool playerDeath = false)
+    public virtual void WasShot(bool playerDeath = false, bool keepPoints = true)
     {
       ReadyToRemove = true;
 
@@ -75,10 +75,12 @@ namespace Asteroids.Entities.Enemies
         GameCore.ParticleManager.CreateParticle(Art.LineParticle, Position, particleColor,25,0.5f, state);
       }
 
+      if (keepPoints)
+        PlayerStatus.AddPoints(PointValue);
+
       if (!playerDeath)
       {
         GameCore.TextManager.Add(new ActionScoreText(Position, PointValue.ToString()));
-        PlayerStatus.AddPoints(PointValue);
         PowerUpSpawner.Update(Position);
       }
     }

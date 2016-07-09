@@ -9,10 +9,18 @@ namespace Asteroids
     public static int Score { get; private set; }
     public static bool IsGameOver => Lives == 0;
     public static bool GodMode { get; set; } = false;
+
+
     private static int scoreForExtraLife;
 
-    private const int MAX_LIFE_INTERVAL = 100;
-    public const int MaxLives = 5;
+    private static int MAX_LIFE_INTERVAL = 100;
+    public static int MaxLives = 5;
+
+    public static int Nukes = 0;
+    public static int MaxNukes = 2;
+
+    public static int ShieldsPerLife = 3;
+    public static int ShieldsLeft { get; set; } = ShieldsPerLife;
 
     static PlayerStatus()
     {
@@ -29,6 +37,8 @@ namespace Asteroids
       Score = 0;
       Lives = MaxLives;
       scoreForExtraLife = MAX_LIFE_INTERVAL;
+      ShieldsLeft = ShieldsPerLife;
+      Nukes = 0;
     }
 
     public static void AddPoints(int basePoints)
@@ -44,6 +54,12 @@ namespace Asteroids
       }
     }
 
+    public static void AddNuke()
+    {
+      if (Nukes < MaxNukes)
+        Nukes++;
+    }
+
     public static void RemoveLife()
     {
       Lives--;
@@ -53,6 +69,12 @@ namespace Asteroids
     {
       if (Lives < MaxLives)
         Lives++;
+    }
+
+    public static void AddShield()
+    {
+      if (ShieldsLeft < ShieldsPerLife)
+        ShieldsLeft++;
     }
   }
 }

@@ -106,7 +106,7 @@ namespace Asteroids.Powerups
     private static void spawnCommon(Vector2 position)
     {
       if (rand.Next(2) == 0)
-        if (Ship.Instance.ShieldsLeft < Ship.Instance.MaxShields)
+        if (PlayerStatus.ShieldsLeft < PlayerStatus.ShieldsPerLife)
         {
           EntityManager.Add(Shield.Create(position));
           Debug.Write($"Spawn Shield");

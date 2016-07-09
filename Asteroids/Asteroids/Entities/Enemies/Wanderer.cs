@@ -23,7 +23,7 @@ namespace Asteroids.Entities.Enemies
       AddBehaviour(moveRandomly());
     }
 
-    public override void WasShot(bool playerDeath = false)
+    public override void WasShot(bool playerDeath = false, bool includePoints = true)
     {
       ReadyToRemove = true;
 
@@ -51,6 +51,9 @@ namespace Asteroids.Entities.Enemies
         GameCore.ParticleManager.CreateParticle(Art.LineParticle, Position, particleColor, 50, 0.5f, state);
       }
 
+      if(includePoints)
+        PlayerStatus.AddPoints(PointValue);
+
       if (!playerDeath)
       {
         // create two smaller wanderers
@@ -58,7 +61,6 @@ namespace Asteroids.Entities.Enemies
         EntityManager.Add(new MiniWanderer(Position + new Vector2(rand.NextFloat(0, 1), rand.NextFloat(0, 1))));
 
         GameCore.TextManager.Add(new ActionScoreText(Position, PointValue.ToString()));
-        PlayerStatus.AddPoints(PointValue);
         PowerUpSpawner.Update(Position);
       }
       

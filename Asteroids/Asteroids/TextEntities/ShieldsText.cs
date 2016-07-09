@@ -18,7 +18,7 @@ namespace Asteroids.TextEntities
 
     private string displayTextForShields()
     {
-      var s = Ship.Instance.AreShieldsUp ? $"Shields Left: {Ship.Instance.ShieldTimeLeft} secs" : $"Shields: {Ship.Instance.ShieldsLeft}";
+      var s = Ship.Instance.AreShieldsUp ? $"Shields Left: {Ship.Instance.ShieldTimeLeft} secs" : $"Shields: {PlayerStatus.ShieldsLeft}";
       return s;
     }
   }

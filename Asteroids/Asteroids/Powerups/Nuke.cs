@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using Asteroids.Entities.Player;
 using Microsoft.Xna.Framework;
 
 namespace Asteroids.Powerups
@@ -25,6 +26,13 @@ namespace Asteroids.Powerups
     protected override void ExpirationCallback()
     {
       Debug.WriteLine("Nuke expired:  Who cares");
+    }
+
+    public override void WasCaptured()
+    {
+      PlayerStatus.AddNuke();
+      base.WasCaptured();
+      CapturedPowerUpParticles(Color.Gold);
     }
 
     public override bool IsActive()

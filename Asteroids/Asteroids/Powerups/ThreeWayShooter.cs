@@ -22,6 +22,11 @@ namespace Asteroids.Powerups
       ActiveDuration = 15;
     }
 
+    public override void WasCaptured()
+    {
+      base.WasCaptured();
+      CapturedPowerUpParticles(Color.Red);
+    }
 
     protected override void ExpirationCallback()
     {

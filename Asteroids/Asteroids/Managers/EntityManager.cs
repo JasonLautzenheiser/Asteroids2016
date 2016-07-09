@@ -146,5 +146,14 @@ namespace Asteroids.Managers
       float radius = aRadius + b.Radius;
       return Vector2.DistanceSquared(a.Position, b.Position) < radius*radius;
     }
+
+    public static void KillAllEnemies()
+    {
+      EnemySpawner.Pause();
+      enemies.ForEach(x => x.WasShot(true));
+
+      EnemySpawner.Reset();
+
+    }
   }
 }
