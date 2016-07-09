@@ -64,6 +64,7 @@ namespace Asteroids
       Pause,
       ExitGame, 
       GodMode,
+      GMNukePower,
       TotalActionCount
     }
 
@@ -79,6 +80,7 @@ namespace Asteroids
       "Nuke",
       "Pause",
       "God Mode",
+      "GM - Nuke Powerup",
       "Exit Game"
     };
 
@@ -117,13 +119,13 @@ namespace Asteroids
       RightTrigger
     }
 
+    
 
     // A combination of gamepad and keyboard keys mapped to a particular action.
     public class ActionMap
     {
       // List of GamePad controls to be mapped to a given action.
       public List<GamePadButtons> gamePadButtons = new List<GamePadButtons>();
-
 
       // List of Keyboard controls to be mapped to a given action.
       public List<Keys> keyboardKeys = new List<Keys>();
@@ -570,6 +572,9 @@ namespace Asteroids
 
       actionMaps[(int) Action.GodMode] = new ActionMap();
       actionMaps[(int) Action.GodMode].keyboardKeys.Add(Keys.F12);
+
+      actionMaps[(int) Action.GMNukePower] = new ActionMap();
+      actionMaps[(int) Action.GMNukePower].keyboardKeys.Add(Keys.F1);
     }
 
     // Check if an action has been pressed.

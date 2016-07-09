@@ -105,17 +105,6 @@ namespace Asteroids.Entities.Player
 
       if (GameCore.Instance.Window != null) this.WrapPositionIfCrossing(GameCore.Instance.Window.ClientBounds);
 
-      //      var pad = InputManager.GetKeyboardInput();
-      //      var touch = InputManager.ProcessTouchInput();
-
-      //      if (PlayerStatus.GodMode)
-      //        if (pad.IsKeyDown(Keys.L))
-      //        {
-      //          PlayerStatus.AddLife();
-      //          NewLifeParticles();
-      //        }
-
-
       if (InputManager.IsActionPressed(InputManager.Action.Fire))
       {
         if (FireLaser())
@@ -130,6 +119,7 @@ namespace Asteroids.Entities.Player
       {
         if (PlayerStatus.Nukes > 0)
         {
+          PlayerStatus.Nukes--;
           nukeParticles();
           EntityManager.KillAllEnemies();
         }

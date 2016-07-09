@@ -40,7 +40,6 @@ namespace Asteroids
       graphics.IsFullScreen = true;
       graphics.PreferredBackBufferWidth = 1920;
       graphics.PreferredBackBufferHeight = 1080;
-//      graphics.SynchronizeWithVerticalRetrace = false;
     }
 
     protected override void Initialize()
@@ -114,10 +113,16 @@ namespace Asteroids
           TextManager.Remove("GodMode");
       }
 
-      //      if (state.IsKeyDown(Keys.F1) && lastState.IsKeyUp(Keys.F1))
-      //      {
-      //        PowerUpSpawner.Create(new Vector2(Viewport.Width / 2 - 65, 80), PowerUpTypes.Nuke);
-      //      }
+
+
+      if (PlayerStatus.GodMode)
+      {
+        if (InputManager.IsActionTriggered(InputManager.Action.GMNukePower))
+        {
+          PowerUpSpawner.Create(new Vector2(Viewport.Width/2 - 65, 80), PowerUpTypes.Nuke);
+        }
+      }
+
 
       if (InputManager.IsActionTriggered(InputManager.Action.Pause))
       {
