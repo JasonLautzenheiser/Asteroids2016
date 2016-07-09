@@ -37,7 +37,6 @@ namespace Asteroids
       graphics = new GraphicsDeviceManager(this);
       Content.RootDirectory = "Content";
 
-      graphics.IsFullScreen = true;
       graphics.PreferredBackBufferWidth = 1920;
       graphics.PreferredBackBufferHeight = 1080;
     }

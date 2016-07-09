@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Asteroids.Entities.Player;
+using Asteroids.Managers;
 using Microsoft.Xna.Framework;
 
 namespace Asteroids.Entities.Enemies
@@ -11,13 +12,31 @@ namespace Asteroids.Entities.Enemies
 
     public Seeker(Vector2 position) : base()
     {
-      Texture = Art.Asteroid;
+      Texture = Art.Seeker;
       Radius = Texture.Width / 2.0f;
       PointValue = 2;
       DrawPriority = 1;
       Mass = 1f;
       Position = position;
       AddBehaviour(followPlayer(.05f));
+      AddBehaviour(fireMissile());
+    }
+
+    private IEnumerable<int> fireMissile()
+    {
+      while (true)
+      {
+        if (rand.Next(0,100)==7)
+        {
+//          Velocity += (Ship.Instance.Position - Position).ScaleTo(1.0f);
+//          Velocity = MathUtilities.ClampVelocity(Velocity);
+          var trajectory = (Ship.Instance.Position - Position).ScaleTo(1.0f);
+          var shot = new SeekerLaser(Position, trajectory);
+          EntityManager.Add(shot);
+        }
+        yield return 0;
+      }
+
     }
 
     private IEnumerable<int> followPlayer(float acceleration = 1f)
@@ -27,7 +46,7 @@ namespace Asteroids.Entities.Enemies
         Velocity += (Ship.Instance.Position - Position).ScaleTo(acceleration);
         Velocity = MathUtilities.ClampVelocity(Velocity);
         if (Velocity != Vector2.Zero)
-          Rotation = Velocity.ToAngle();
+//          Rotation = Velocity.ToAngle();
         yield return 0;
       }
     }
