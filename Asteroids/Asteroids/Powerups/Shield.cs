@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using Asteroids.Entities.Player;
 using Microsoft.Xna.Framework;
 
 namespace Asteroids.Powerups
@@ -21,6 +22,15 @@ namespace Asteroids.Powerups
       PointValue = 5;
       ActiveDuration = 0;
     }
+
+    public override void WasCaptured()
+    {
+      PlayerStatus.AddShield();
+      Ship.Instance.NewShieldParticles();
+      base.WasCaptured();
+      CapturedPowerUpParticles(Color.Green);
+    }
+
 
     protected override void ExpirationCallback()
     {

@@ -34,6 +34,8 @@ namespace Asteroids.Powerups
       PlayerStatus.AddLife();
       Ship.Instance.NewLifeParticles();
       base.WasCaptured();
+      CapturedPowerUpParticles(Color.Blue);
+
     }
 
     public override bool IsActive()
