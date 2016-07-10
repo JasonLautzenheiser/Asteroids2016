@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 
 namespace Asteroids.Entities.Enemies
 {
@@ -25,6 +26,17 @@ namespace Asteroids.Entities.Enemies
       if (!GameCore.Viewport.Bounds.Contains(Position.ToPoint()))
         ReadyToRemove = true;
 
+    }
+
+    public override void Die()
+    {
+      Random rand = new Random();
+      for (int i = 0; i < 130; i++)
+      {
+        GameCore.ParticleManager.CreateParticle(Art.Glow, Position, Color.LightBlue, 10, 0.5f, new ParticleState() {Velocity = rand.NextVector2(0, 2), Type = ParticleType.None, LengthMultiplier = 0.75f});
+      }
+
+      base.Die();
     }
   }
 }

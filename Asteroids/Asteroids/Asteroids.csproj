@@ -70,6 +70,8 @@
     <Compile Include="GameCore.cs" />
     <Compile Include="GameObjectExtension.cs" />
     <Compile Include="InputManager.cs" />
+    <Compile Include="Levels\Level.cs" />
+    <Compile Include="Levels\LevelManager.cs" />
     <Compile Include="Managers\EntityManager.cs" />
     <Compile Include="Managers\IManager.cs" />
     <Compile Include="Managers\ParticleManager.cs" />
@@ -96,6 +98,7 @@
     <Compile Include="TextEntities\ScoreText.cs" />
     <Compile Include="TextEntities\ShieldsText.cs" />
     <Compile Include="TextEntities\TextEntity.cs" />
+    <Compile Include="Utilities\TypeExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
@@ -153,9 +156,7 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Utilities\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

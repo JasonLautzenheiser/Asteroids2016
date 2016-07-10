@@ -48,8 +48,7 @@ namespace Asteroids.Entities.Player
       Texture = Art.Player;
       Radius = 10;
       Rotation = 0;
-      var soundLaser = SoundEffects.Laser;
-      soundEffect = soundLaser.CreateInstance();
+
       rand = new Random();
       DrawPriority = 1;
       Mass = 1.0f;
@@ -109,8 +108,11 @@ namespace Asteroids.Entities.Player
       {
         if (FireLaser())
         {
-          soundEffect.Volume = 0.2f;
-          soundEffect.Play();
+          var soundLaser = SoundEffects.Laser;
+          var tsoundEffect = soundLaser.CreateInstance();
+
+          tsoundEffect.Volume = 0.2f;
+          tsoundEffect.Play();
         }
       }
 
@@ -348,18 +350,22 @@ namespace Asteroids.Entities.Player
 
       lastLaserFire = DateTime.Now;
 
-      var trajectory = Vector2.Transform(new Vector2(0, 1), Matrix.CreateRotationZ(Rotation - MathHelper.Pi));
-      var shot = new Laser(Position, trajectory);
+      var rotationZ = Matrix.CreateRotationZ(Rotation - MathHelper.Pi);
+      var laserStartAngle = new Vector2(0, 1) + rand.NextVector2(0, 0.2f);
+      var trajectory = Vector2.Transform(laserStartAngle, rotationZ);
+      var position = Position + Vector2.Transform(new Vector2(0, 20), rotationZ);
+
+      var shot = new Laser(position, trajectory);
       EntityManager.Add(shot);
       
       if (isMultiShootActive())
       {
-        var trajectory1 = Vector2.Transform(new Vector2(0, 1), Matrix.CreateRotationZ(Rotation - (MathHelper.Pi-MathHelper.ToRadians(30))));
-        var shot1 = new Laser(Position, trajectory1);
+        var trajectory1 = Vector2.Transform(laserStartAngle, Matrix.CreateRotationZ(Rotation - (MathHelper.Pi-MathHelper.ToRadians(30))));
+        var shot1 = new Laser(position, trajectory1);
         EntityManager.Add(shot1);
 
-        var trajectory2 = Vector2.Transform(new Vector2(0, 1), Matrix.CreateRotationZ(Rotation - (MathHelper.Pi-MathHelper.ToRadians(-30))));
-        var shot2 = new Laser(Position, trajectory2);
+        var trajectory2 = Vector2.Transform(laserStartAngle, Matrix.CreateRotationZ(Rotation - (MathHelper.Pi-MathHelper.ToRadians(-30))));
+        var shot2 = new Laser(position, trajectory2);
         EntityManager.Add(shot2);
       }
       return true;
@@ -378,7 +384,7 @@ namespace Asteroids.Entities.Player
     private bool blasterNotReady()
     {
       var elapsed = (DateTime.Now - lastLaserFire);
-      return elapsed < TimeSpan.FromSeconds(0.2);
+      return elapsed < TimeSpan.FromSeconds(0.05);
     }
 
     public void AddPowerup(PowerUp powerUp)

@@ -16,6 +16,8 @@ namespace Asteroids.Entities
     public float Rotation { get; set; }
     public virtual bool ReadyToRemove { get; set; }
     public float Mass { get; set; }
+    public float MaxHealth { get; set; }
+    public float CurrentHealth { get; set; }
     public int DrawPriority { get; set; }
 
     public Vector2 Size
@@ -56,6 +58,11 @@ namespace Asteroids.Entities
     public virtual Rectangle GetBoundingRectangle()
     {
       return GetRectBounds(Texture);
+    }
+
+    public virtual void Die()
+    {
+      ReadyToRemove = true;
     }
   }
 }

@@ -10,8 +10,8 @@ namespace Asteroids.Entities.Enemies
     public MiniWanderer(Vector2 position) : base()
     {
       Texture = Art.SmallAsteroid;
-      Radius = Texture.Width / 2.0f;
-      PointValue = 5;
+      Radius = (Texture.Width-5) / 2.0f;
+      PointValue = 3;
       DrawPriority = 1;
       Mass = 1f;
       Position = position;
@@ -30,7 +30,7 @@ namespace Asteroids.Entities.Enemies
         for (int i = 0; i < 6; i++)
         {
           Velocity += MathUtilities.FromPolar(direction, 0.01f);
-          Velocity = MathUtilities.ClampVelocity(Velocity, 7.0f);
+          Velocity = MathUtilities.ClampVelocity(Velocity);
           Rotation -= 0.05f;
 
           var bounds = GameCore.Viewport.Bounds;
