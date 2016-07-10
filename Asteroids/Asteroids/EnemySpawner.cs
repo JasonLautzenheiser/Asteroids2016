@@ -1,8 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using Asteroids.Entities;
 using Asteroids.Entities.Enemies;
 using Asteroids.Entities.Player;
+using Asteroids.Levels;
 using Asteroids.Managers;
+using Asteroids.TextEntities;
+using Asteroids.Utilities;
 using Microsoft.Xna.Framework;
 
 namespace Asteroids
@@ -16,30 +23,36 @@ namespace Asteroids
     private static bool pause = false;
     private static float fStartDelay = 0.5f;
 
+    private static double lastEnemySpawn;
+
+    public static void StartLevel()
+    {
+      LevelManager.CurrentLevel.EnemiesAllowed.ForEach(p=>p.Created = 0);
+      lastEnemySpawn = 0;
+    }
+
     public static void Update()
     {
+      // determine if we should spawn
       fStartDelay -= (float)GameCore.GameTime.ElapsedGameTime.TotalSeconds;
       if (fStartDelay > 0) return;
-
       if (Ship.Instance.IsDead || EntityManager.Count >= maxEntityCount || pause) return;
-      if (rand.Next((int)inverseSpawnChance) == 0)
-        EntityManager.Add(new Wanderer(getSpawnPosition()));
 
-//      if (rand.Next((int)inverseSpawnChance) == 0)
-//        EntityManager.Add(new MiniWanderer(getSpawnPosition()));
-
-      if (rand.Next((int) inverseSpawnChance * (int)seekerChanceMultiplier) == 0)
-        EntityManager.Add(new Seeker(getSpawnPosition()));
-
-
-      if (seekerChanceMultiplier > 3)
-        seekerChanceMultiplier -= 0.00001f;
-      
-      if (maxEntityCount < 10)
-        maxEntityCount += 0.001f;
-
-      if (inverseSpawnChance > 30)
-        inverseSpawnChance -= 0.000005f;
+      // can any enemy spawn yet?
+      if (rand.Next(2) == 0)
+      {
+        foreach (var enemy in LevelManager.CurrentLevel.EnemiesAllowed.Where(p=>p.AutoSpawn && p.MaxNumber > p.Created).OrderByDescending(p => p.SpawnRate))
+        {
+          if (GameCore.GameTime.TotalGameTime.TotalSeconds - lastEnemySpawn > enemy.SpawnRate)
+          {
+            var enemyToSpawn = enemy;
+            EntityManager.Add(enemyToSpawn.EnemyType.GetInstance<Entity>(getSpawnPosition()));
+            lastEnemySpawn = GameCore.GameTime.TotalGameTime.TotalSeconds;
+            enemy.Created++;
+            break;
+          }
+        }
+      }
     }
 
     private static Vector2 getSpawnPosition()
@@ -58,12 +71,20 @@ namespace Asteroids
       inverseSpawnChance = 90;
       maxEntityCount = 20;
       seekerChanceMultiplier = 6;
+      StartLevel();
       pause = false;
+
     }
 
     public static void Pause()
     {
       pause = true;
+    }
+
+    private class LevelEnemyExtra
+    {
+      public LevelEnemy Enemy { get; set; }
+      public int Created { get; set; }
     }
   }
 }

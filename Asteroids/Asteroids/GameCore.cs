@@ -1,6 +1,7 @@
 ﻿using System;
 using Asteroids.Entities;
 using Asteroids.Entities.Player;
+using Asteroids.Levels;
 using Asteroids.Managers;
 using Asteroids.Powerups;
 using Asteroids.TextEntities;
@@ -44,12 +45,12 @@ namespace Asteroids
     protected override void Initialize()
     {
       InputManager.Initialize();
+      LevelManager.InitLevels();
 
       base.Initialize();
 
       IsFixedTimeStep = false;
       
-
       ParticleManager = new ParticleManager<ParticleState>(1024 * 20, ParticleState.UpdateParticle);
       TextManager = new TextManager();
 
@@ -67,7 +68,6 @@ namespace Asteroids
       TextManager.Add(fps);
 
 
-
       //      quadTree = new QuadTree(0, GraphicsDevice.Viewport.Bounds);
 
       EntityManager.Add(new Starfield());
@@ -77,6 +77,8 @@ namespace Asteroids
       MediaPlayer.IsRepeating = true;
       MediaPlayer.Volume = .3f;
       MediaPlayer.Play(song);
+
+      EnemySpawner.StartLevel();
     }
 
     protected override void LoadContent()
@@ -98,6 +100,7 @@ namespace Asteroids
       GameTime = gameTime;
 
       InputManager.Update();
+      LevelManager.Update();
 
       if (InputManager.IsActionTriggered(InputManager.Action.ExitGame))
         Exit();
