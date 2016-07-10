@@ -57,8 +57,8 @@ namespace Asteroids.Entities.Enemies
       if (!playerDeath)
       {
         // create two smaller wanderers
-        EntityManager.Add(new MiniWanderer(Position + new Vector2(rand.NextFloat(0, 1), rand.NextFloat(0,1))));
-        EntityManager.Add(new MiniWanderer(Position + new Vector2(rand.NextFloat(0, 1), rand.NextFloat(0, 1))));
+        EntityManager.Add(new MiniWanderer(Position + new Vector2(rand.NextFloat(10,50), rand.NextFloat(10,50))));
+        EntityManager.Add(new MiniWanderer(Position + new Vector2(rand.NextFloat(10, 50), rand.NextFloat(10, 50))));
 
         GameCore.TextManager.Add(new ActionScoreText(Position, PointValue.ToString()));
         PowerUpSpawner.Update(Position);
@@ -78,7 +78,7 @@ namespace Asteroids.Entities.Enemies
         for (int i = 0; i < 6; i++)
         {
           Velocity += MathUtilities.FromPolar(direction, 0.01f);
-          Velocity = MathUtilities.ClampVelocity(Velocity,5.0f);
+          Velocity = MathUtilities.ClampVelocity(Velocity,2.0f);
           Rotation -= 0.05f;
 
           var bounds = GameCore.Viewport.Bounds;

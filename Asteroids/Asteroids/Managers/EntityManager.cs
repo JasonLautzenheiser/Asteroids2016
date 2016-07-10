@@ -79,11 +79,6 @@ namespace Asteroids.Managers
     {
       foreach (var t in enemies)
       {
-        Enemy t1 = t;
-        foreach (var s in enemies.Where(s => t1 != s).Where(s => isColliding(t1, s)))
-        {
-          t.HandleCollision(s);
-        }
       }
 
       foreach (var enemy in enemies)
@@ -94,10 +89,7 @@ namespace Asteroids.Managers
           enemy.WasShot();
           laser.ReadyToRemove = true;
         }
-      }
 
-      foreach (var enemy in enemies)
-      {
         if (enemy.IsActive && isColliding(Ship.Instance, enemy))
         {
           if (!Ship.Instance.AreShieldsUp)
@@ -107,7 +99,35 @@ namespace Asteroids.Managers
           }
           enemy.HandleCollision(Ship.Instance);
         }
+
+        Enemy t1 = enemy;
+        foreach (var s in enemies.Where(s => t1 != s).Where(s => isColliding(t1, s)))
+        {
+          enemy.HandleCollision(s);
+        }
+
       }
+
+      //      foreach (var enemy in enemies)
+      //      {
+      //      }
+
+      foreach (var laser in entities.OfType<SeekerLaser>()  )
+      {
+        if (isColliding(Ship.Instance, laser))
+        {
+          if (!Ship.Instance.AreShieldsUp)
+          {
+            killPlayer();
+            break;
+          }
+          else
+          {
+            laser.Die();
+          }
+        }
+      }
+
 
       foreach (var powerUp in PowerUps)
       {

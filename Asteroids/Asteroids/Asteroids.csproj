@@ -110,6 +110,7 @@
     <None Include="Content\Glow.png" />
     <None Include="Content\Laser.png" />
     <Content Include="Content\e_f1.png" />
+    <Content Include="Content\HealthBar.png" />
     <Content Include="Content\Music.mp3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
