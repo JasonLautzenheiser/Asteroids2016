@@ -27,8 +27,10 @@ namespace Asteroids
 
     public static void StartLevel()
     {
-      LevelManager.CurrentLevel.EnemiesAllowed.ForEach(p=>p.Created = 0);
-      lastEnemySpawn = 0;
+      LevelManager.CurrentLevel.EnemiesAllowed.ForEach(p=> { p.Created = 0;
+                                                             p.LastSpawn = 0.0;
+      });
+      
     }
 
     public static void Update()
@@ -43,11 +45,13 @@ namespace Asteroids
       {
         foreach (var enemy in LevelManager.CurrentLevel.EnemiesAllowed.Where(p=>p.AutoSpawn && p.MaxNumber > p.Created).OrderByDescending(p => p.SpawnRate))
         {
-          if (GameCore.GameTime.TotalGameTime.TotalSeconds - lastEnemySpawn > enemy.SpawnRate)
+          Debug.WriteLine($"Trying to spawn: {enemy.EnemyType.FullName}");
+          if (GameCore.GameTime.TotalGameTime.TotalSeconds - enemy.LastSpawn > enemy.SpawnRate)
           {
+            Debug.WriteLine($"spawn: {enemy.EnemyType.FullName}");
             var enemyToSpawn = enemy;
             EntityManager.Add(enemyToSpawn.EnemyType.GetInstance<Entity>(getSpawnPosition()));
-            lastEnemySpawn = GameCore.GameTime.TotalGameTime.TotalSeconds;
+            enemy.LastSpawn = GameCore.GameTime.TotalGameTime.TotalSeconds;
             enemy.Created++;
             break;
           }

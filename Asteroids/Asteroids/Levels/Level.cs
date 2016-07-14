@@ -19,5 +19,6 @@ namespace Asteroids.Levels
     public float SpawnRate { get; set; } = 1;
     public bool AutoSpawn { get; set; } = true;
     public int Created { get; set; }
+    public double LastSpawn { get; set; } = 0.0;
   }
 }

@@ -29,7 +29,18 @@ namespace Asteroids.Levels
         Number = 1,
         EnemiesAllowed = new List<LevelEnemy>
         {
-          new LevelEnemy { EnemyType = typeof(Wanderer), MaxNumber = 10, SpawnRate = 1.0f, AutoSpawn = true},
+          new LevelEnemy { EnemyType = typeof(Wanderer), MaxNumber = 20, SpawnRate = 2.0f, AutoSpawn = true},
+        }
+      });
+
+      levels.Add(new Level
+      {
+        Number = 3,
+        EnemiesAllowed = new List<LevelEnemy>
+        {
+          new LevelEnemy { EnemyType = typeof(Wanderer), MaxNumber = 20, SpawnRate = 2.0f, AutoSpawn = true},
+          new LevelEnemy { EnemyType = typeof(MiniWanderer), MaxNumber = 10, AutoSpawn = false},
+          new LevelEnemy { EnemyType = typeof(Seeker), MaxNumber = 5, SpawnRate = 5.0f, AutoSpawn = true},
         }
       });
 
@@ -38,7 +49,7 @@ namespace Asteroids.Levels
         Number = 2,
         EnemiesAllowed = new List<LevelEnemy>
         {
-          new LevelEnemy { EnemyType = typeof(Wanderer), MaxNumber = 10, SpawnRate = 1.0f, AutoSpawn = true},
+          new LevelEnemy { EnemyType = typeof(Wanderer), MaxNumber = 20, SpawnRate = 1.0f, AutoSpawn = true},
           new LevelEnemy { EnemyType = typeof(MiniWanderer), MaxNumber = 10, AutoSpawn = false},
         }
       });
