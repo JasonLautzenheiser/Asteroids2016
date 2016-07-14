@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Asteroids.Entities.Player;
 using Asteroids.Managers;
 using Microsoft.Xna.Framework;
@@ -42,12 +43,17 @@ namespace Asteroids.Entities.Enemies
     {
       while (true)
       {
-        Velocity += (Ship.Instance.Position - Position).ScaleTo(acceleration);
-        Velocity = MathUtilities.ClampVelocity(Velocity,7f);
-        if (Velocity != Vector2.Zero)
-           Rotation = Velocity.ToAngle();
+          Velocity += (Ship.Instance.Position - Position).ScaleTo(acceleration);
+          Velocity = MathUtilities.ClampVelocity(Velocity, 7f);
+//          if (Velocity != Vector2.Zero)
+//            Rotation = Velocity.ToAngle();
         yield return 0;
       }
+    }
+
+    public override void Update()
+    {
+      base.Update();
     }
 
     public override void Draw(SpriteBatch batch)
