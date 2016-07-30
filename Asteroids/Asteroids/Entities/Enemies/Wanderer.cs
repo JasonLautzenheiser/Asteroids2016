@@ -20,6 +20,7 @@ namespace Asteroids.Entities.Enemies
       DrawPriority = 1;
       Mass = 1f;
       Position = position;
+      Damage = 50;
       AddBehaviour(moveRandomly());
     }
 

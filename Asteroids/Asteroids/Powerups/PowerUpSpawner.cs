@@ -14,7 +14,9 @@ namespace Asteroids.Powerups
     ExtraLife,
     MultiShoot,
     Nuke,
-    Shield
+    Shield,
+    RoundShot,
+    Health
   }
 
   public enum PowerUpScarcity
@@ -48,6 +50,8 @@ namespace Asteroids.Powerups
         new powerUp() {Type = PowerUpTypes.Shield, Scarcity = PowerUpScarcity.Common},
         new powerUp() {Type = PowerUpTypes.MultiShoot, Scarcity = PowerUpScarcity.Common},
         new powerUp() {Type = PowerUpTypes.Nuke, Scarcity = PowerUpScarcity.SuperRare},
+        new powerUp() {Type = PowerUpTypes.RoundShot, Scarcity = PowerUpScarcity.Common},
+        new powerUp() {Type = PowerUpTypes.Health, Scarcity = PowerUpScarcity.Common},
       }; 
 
       // cache powerup type counts
@@ -62,27 +66,21 @@ namespace Asteroids.Powerups
 
       var shouldWeSpawn = rand.Next(100) <= 50;
 
-      Debug.WriteLine($"spawn: {shouldWeSpawn}");
-      
       if (!shouldWeSpawn) return;
 
       var scarcityGenerator = rand.Next(100);
-      Debug.WriteLine($"scarcity: {scarcityGenerator}");
 
       PowerUpScarcity type;
       if (scarcityGenerator < 5)
       {
         type = PowerUpScarcity.SuperRare;
-        Debug.WriteLine($"Spawning Superrare");
       }
       else if (scarcityGenerator >= 5 && scarcityGenerator <= 25)
       {
         type = PowerUpScarcity.Rare;
-        Debug.WriteLine($"Spawning rare");
       }
       else
       {
-        Debug.WriteLine($"Spawning Common");
         type = PowerUpScarcity.Common;
       }
 
@@ -105,18 +103,27 @@ namespace Asteroids.Powerups
 
     private static void spawnCommon(Vector2 position)
     {
-      if (rand.Next(2) == 0)
-        if (PlayerStatus.ShieldsLeft < PlayerStatus.ShieldsPerLife)
-        {
-          EntityManager.Add(Shield.Create(position));
-          Debug.Write($"Spawn Shield");
-        }
-        else
-        {
+      switch (rand.Next(4))
+      {
+        case 0:
+          if (PlayerStatus.ShieldsLeft < PlayerStatus.ShieldsPerLife)
+          {
+            EntityManager.Add(Shield.Create(position));
+          }
+          break;
+        case 1:
           EntityManager.Add(ThreeWayShooter.Create(position));
-          Debug.Write($"Spawn Mulishoot");
-
-        }
+          break;
+        case 2:
+          EntityManager.Add(RoundShot.Create(position));
+          break;
+        case 3:
+          if (Ship.Instance.CurrentHealth < Ship.Instance.MaxHealth * 0.8f)
+          {
+            EntityManager.Add(Health.Create(position));
+          }
+          break;
+      }
     }
 
     private static void spawnRare(Vector2 position)
@@ -125,7 +132,6 @@ namespace Asteroids.Powerups
       if (PlayerStatus.Lives != PlayerStatus.MaxLives)
       {
         EntityManager.Add(ExtraLife.Create(position));
-        Debug.Write($"Spawn extra life");
       }
     }
 
@@ -133,8 +139,6 @@ namespace Asteroids.Powerups
     {
       // if there become more than one superrare powerup, then need to pick between them
       EntityManager.Add(Nuke.Create(position));
-      Debug.Write($"Nuke");
-
     }
 
 
@@ -145,6 +149,9 @@ namespace Asteroids.Powerups
 
       if (type==PowerUpTypes.MultiShoot)
         EntityManager.Add(ThreeWayShooter.Create(position));
+
+      if (type==PowerUpTypes.RoundShot)
+        EntityManager.Add(RoundShot.Create(position));
 
       if (type==PowerUpTypes.Shield)
         EntityManager.Add(Shield.Create(position));

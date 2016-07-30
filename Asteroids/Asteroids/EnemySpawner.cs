@@ -18,7 +18,7 @@ namespace Asteroids
   {
     private static readonly Random rand = new Random();
     private static float inverseSpawnChance = 90;
-    private static float maxEntityCount = 20;
+    private static float maxEntityCount = 1000;
     private static float seekerChanceMultiplier = 6;
     private static bool pause = false;
     private static float fStartDelay = 0.5f;
@@ -45,10 +45,8 @@ namespace Asteroids
       {
         foreach (var enemy in LevelManager.CurrentLevel.EnemiesAllowed.Where(p=>p.AutoSpawn && p.MaxNumber > p.Created).OrderByDescending(p => p.SpawnRate))
         {
-          Debug.WriteLine($"Trying to spawn: {enemy.EnemyType.FullName}");
           if (GameCore.GameTime.TotalGameTime.TotalSeconds - enemy.LastSpawn > enemy.SpawnRate)
           {
-            Debug.WriteLine($"spawn: {enemy.EnemyType.FullName}");
             var enemyToSpawn = enemy;
             EntityManager.Add(enemyToSpawn.EnemyType.GetInstance<Entity>(getSpawnPosition()));
             enemy.LastSpawn = GameCore.GameTime.TotalGameTime.TotalSeconds;
@@ -73,7 +71,6 @@ namespace Asteroids
     {
       fStartDelay = 1.5f;
       inverseSpawnChance = 90;
-      maxEntityCount = 20;
       seekerChanceMultiplier = 6;
       StartLevel();
       pause = false;

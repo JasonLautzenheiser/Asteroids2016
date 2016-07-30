@@ -7,47 +7,52 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Input.Touch;
 
 namespace Asteroids.Entities.Player
 {
   public class Ship : Entity
   {
-    private static Ship instance;
-
-    public static Ship Instance => instance ?? (instance = new Ship());
-
     private const float ANGLE180 = MathHelper.Pi;
     private const float MAX_ACCEL = 300f;
     private const float MAX_THRUST = 100f;
     private const float MAX_VELOCITY = 340f;
     private const float FRICTION_FACTOR = 0.9f;
-    private const float SHIELD_LENGTH = 15f;
+    private const float SHIELD_LENGTH = 8f;
     private const float SHIELD_REGEN = 5f;
+    private static Ship instance;
+    private readonly Random rand;
+
+    private readonly SoundEffectInstance soundEffect;
+
+
+
+    private List<PowerUp> activePowerups = new List<PowerUp>();
+    private bool areShieldsUp;
+    private double fireCoolDownTimer = 0.0;
+    private double fireHoldTimer = 0.0;
+    private bool firstTimeShield = true;
+
+    private int framesUntilRespawn;
+
+    private DateTime lastLaserFire = DateTime.Now;
+    private KeyboardState lastState;
+    private double rotateHoldTimer;
+    private DateTime shieldEnd;
 
     private DateTime shieldStart;
-    private DateTime shieldEnd;
-    private int shieldUse = 0;
-    private bool firstTimeShield = true;
+    private int shieldUse;
+
+    private bool showCollisionMesh = true;
 
     private float spin;
     private float thrust;
-    private readonly Random rand;
-
-    private DateTime lastLaserFire = DateTime.Now;
-
-    private List<PowerUp> activePowerups = new List<PowerUp>();
-
-    readonly SoundEffectInstance soundEffect;
-
-    public double ShieldTimeLeft => (int)(SHIELD_LENGTH - (DateTime.Now - shieldStart).TotalSeconds);
-    private KeyboardState lastState;
 
     private Ship()
     {
       Texture = Art.Player;
-      Radius = 10;
+      Radius = Texture.Width/2.0f;
       Rotation = 0;
+      MaxHealth = 1000;
 
       rand = new Random();
       DrawPriority = 1;
@@ -55,21 +60,15 @@ namespace Asteroids.Entities.Player
       reset();
     }
 
-    private void reset()
-    {
-      activePowerups.Clear();
-      Position = GameCore.ScreenSize / 2;
-      firstTimeShield = true;
-    }
-
-    private int framesUntilRespawn;
+    public static Ship Instance => instance ?? (instance = new Ship());
+    public float VisibleHealth { get; set; }
+    public double ShieldTimeLeft => (int) (SHIELD_LENGTH - (DateTime.Now - shieldStart).TotalSeconds);
     public bool IsDead => framesUntilRespawn > 0;
-    private bool areShieldsUp;
     public bool AreShieldsUp
     {
       get { return areShieldsUp; }
-      private set 
-      { 
+      private set
+      {
         areShieldsUp = value;
         if (value)
           shieldStart = DateTime.Now;
@@ -78,12 +77,22 @@ namespace Asteroids.Entities.Player
       }
     }
 
+    private void reset()
+    {
+      activePowerups.Clear();
+      Position = GameCore.ScreenSize/2;
+      firstTimeShield = true;
+      CurrentHealth = MaxHealth;
+      VisibleHealth = MaxHealth;
+    }
+
 
     public override void Draw(SpriteBatch batch)
     {
       if (!IsDead)
         base.Draw(batch);
     }
+
 
     public override void Update()
     {
@@ -94,7 +103,7 @@ namespace Asteroids.Entities.Player
         {
           PlayerStatus.Reset();
         }
-        Position = GameCore.ScreenSize / 2;
+        Position = GameCore.ScreenSize/2;
         Velocity = Vector2.Zero;
         shieldUse = 0;
         return;
@@ -147,23 +156,22 @@ namespace Asteroids.Entities.Player
       handleShields();
       handleThrust();
       handleRotation(GameCore.GameTime.ElapsedGameTime);
- 
-      Acceleration = (Math.Abs(thrust - 0) > 0.001f) ? applyThrust(thrust) : applyFriction();
+
+      Acceleration = Math.Abs(thrust - 0) > 0.001f ? applyThrust(thrust) : applyFriction();
 
       base.Update();
 
       clampVelocity();
-
     }
 
     private void nukeParticles()
     {
-      Color explosionColor = new Color(0.8f, 0.8f, 0.4f);
-      for (int i = 0; i < 1200; i++)
+      var explosionColor = new Color(0.8f, 0.8f, 0.4f);
+      for (var i = 0; i < 1200; i++)
       {
-        float speed = 38f; //18f * (1f - 1 / rand.NextFloat(1f, 10f));
-        Color killColor = Color.Lerp(Color.Gold, explosionColor, rand.NextFloat(0, 1));
-        var state = new ParticleState()
+        var speed = 38f; //18f * (1f - 1 / rand.NextFloat(1f, 10f));
+        var killColor = Color.Lerp(Color.Gold, explosionColor, rand.NextFloat(0, 1));
+        var state = new ParticleState
         {
           Velocity = rand.NextVector2(speed, speed),
           Type = ParticleType.None,
@@ -210,17 +218,17 @@ namespace Asteroids.Entities.Player
       PlayerStatus.RemoveLife();
       framesUntilRespawn = PlayerStatus.IsGameOver ? 300 : 120;
 
-      Color explosionColor = new Color(0.8f,0.8f, 0.4f);
-      for (int i = 0; i < 1200; i++)
+      var explosionColor = new Color(0.8f, 0.8f, 0.4f);
+      for (var i = 0; i < 1200; i++)
       {
-        float speed = 18f*(1f - 1/rand.NextFloat(1f, 10f));
-        Color killColor = Color.Lerp(Color.White, explosionColor, rand.NextFloat(0, 1));
-        var state = new ParticleState()
-                      {
-                        Velocity = rand.NextVector2(speed, speed),
-                        Type = ParticleType.None,
-                        LengthMultiplier = 1
-                      };
+        var speed = 18f*(1f - 1/rand.NextFloat(1f, 10f));
+        var killColor = Color.Lerp(Color.White, explosionColor, rand.NextFloat(0, 1));
+        var state = new ParticleState
+        {
+          Velocity = rand.NextVector2(speed, speed),
+          Type = ParticleType.None,
+          LengthMultiplier = 1
+        };
         GameCore.ParticleManager.CreateParticle(Art.LineParticle, Position, killColor, 190, 1.5f, state);
       }
 
@@ -230,17 +238,17 @@ namespace Asteroids.Entities.Player
 
     private void makeShields()
     {
-      for (int i=0; i<=2; i++)
+      for (var i = 0; i <= 2; i++)
       {
-        float rads = (float) (rand.NextDouble()*MathHelper.TwoPi);
-        Vector2 offset = new Vector2((float) Math.Cos(rads)*40, (float) Math.Sin(rads)*40);
+        var rads = (float) (rand.NextDouble()*MathHelper.TwoPi);
+        var offset = new Vector2((float) Math.Cos(rads)*40, (float) Math.Sin(rads)*40);
         const float ALPHA = 0.7f;
         var shieldVelocity = rand.NextVector2(0, 1);
-        GameCore.ParticleManager.CreateParticle(Art.LineParticle, Position + offset, Color.White * ALPHA, 60f, new Vector2(0.5f, 0.5f), new ParticleState(shieldVelocity, ParticleType.Shield));
-        GameCore.ParticleManager.CreateParticle(Art.Glow, Position + offset, Color.Blue * ALPHA, 60f, new Vector2(1.5f, 1.5f), new ParticleState(shieldVelocity, ParticleType.Shield));
-        GameCore.ParticleManager.CreateParticle(Art.Glow, Position + offset + rand.NextVector2(0, 1), Color.CadetBlue * ALPHA, 60f, 1.5f, new ParticleState(shieldVelocity, ParticleType.Shield));
-        GameCore.ParticleManager.CreateParticle(Art.Glow, Position + offset + rand.NextVector2(0, 1), Color.Navy * ALPHA, 60f, 2.0f, new ParticleState(shieldVelocity, ParticleType.Shield));
-        GameCore.ParticleManager.CreateParticle(Art.Glow, Position + offset + rand.NextVector2(0, 1), Color.Aqua * ALPHA, 60f, 1f, new ParticleState(shieldVelocity, ParticleType.Shield));
+        GameCore.ParticleManager.CreateParticle(Art.LineParticle, Position + offset, Color.White*ALPHA, 60f, new Vector2(0.5f, 0.5f), new ParticleState(shieldVelocity, ParticleType.Shield));
+        GameCore.ParticleManager.CreateParticle(Art.Glow, Position + offset, Color.Blue*ALPHA, 60f, new Vector2(1.5f, 1.5f), new ParticleState(shieldVelocity, ParticleType.Shield));
+        GameCore.ParticleManager.CreateParticle(Art.Glow, Position + offset + rand.NextVector2(0, 1), Color.CadetBlue*ALPHA, 60f, 1.5f, new ParticleState(shieldVelocity, ParticleType.Shield));
+        GameCore.ParticleManager.CreateParticle(Art.Glow, Position + offset + rand.NextVector2(0, 1), Color.Navy*ALPHA, 60f, 2.0f, new ParticleState(shieldVelocity, ParticleType.Shield));
+        GameCore.ParticleManager.CreateParticle(Art.Glow, Position + offset + rand.NextVector2(0, 1), Color.Aqua*ALPHA, 60f, 1f, new ParticleState(shieldVelocity, ParticleType.Shield));
       }
     }
 
@@ -249,32 +257,30 @@ namespace Asteroids.Entities.Player
       if (Velocity.LengthSquared() > 0.1f)
       {
 //        Rotation = Velocity.ToAngle();
-        Quaternion rot = Quaternion.CreateFromYawPitchRoll(0f, 0f, Rotation);
+        var rot = Quaternion.CreateFromYawPitchRoll(0f, 0f, Rotation);
 
-        double t = GameCore.GameTime.TotalGameTime.TotalSeconds;
-        Vector2 baseVel = Velocity.ScaleTo(-3);
-        Vector2 perpVel = new Vector2(baseVel.Y, -baseVel.X) * (0.5f * (float)Math.Sin(t*10));
-        Color sideColor = new Color(200,38,9);
-        Color midColor =new Color(255,187,39);
-        Vector2 pos = Position + Vector2.Transform(new Vector2(0, 0), rot);
+        var t = GameCore.GameTime.TotalGameTime.TotalSeconds;
+        var baseVel = Velocity.ScaleTo(-3);
+        var perpVel = new Vector2(baseVel.Y, -baseVel.X)*(0.5f*(float) Math.Sin(t*10));
+        var sideColor = new Color(200, 38, 9);
+        var midColor = new Color(255, 187, 39);
+        var pos = Position + Vector2.Transform(new Vector2(0, 0), rot);
         const float ALPHA = 0.7f;
 
-        Vector2 velMid = baseVel + rand.NextVector2(0, 1);
-        GameCore.ParticleManager.CreateParticle(Art.LineParticle, pos, Color.White *ALPHA, 60f, new Vector2(0.5f,1),new ParticleState(velMid, ParticleType.ShipExhaust) );
-        GameCore.ParticleManager.CreateParticle(Art.Glow, pos, midColor*ALPHA, 60f, new Vector2(0.5f,1), new ParticleState(velMid, ParticleType.ShipExhaust));
+        var velMid = baseVel + rand.NextVector2(0, 1);
+        GameCore.ParticleManager.CreateParticle(Art.LineParticle, pos, Color.White*ALPHA, 60f, new Vector2(0.5f, 1), new ParticleState(velMid, ParticleType.ShipExhaust));
+        GameCore.ParticleManager.CreateParticle(Art.Glow, pos, midColor*ALPHA, 60f, new Vector2(0.5f, 1), new ParticleState(velMid, ParticleType.ShipExhaust));
 
         // side particle streams
-        Vector2 vel1 = baseVel + perpVel + rand.NextVector2(0, 0.3f);
-        Vector2 vel2 = baseVel - perpVel + rand.NextVector2(0, 0.3f);
+        var vel1 = baseVel + perpVel + rand.NextVector2(0, 0.3f);
+        var vel2 = baseVel - perpVel + rand.NextVector2(0, 0.3f);
 
-        GameCore.ParticleManager.CreateParticle(Art.LineParticle, pos, Color.White * ALPHA, 60f, new Vector2(0.5f, 1),new ParticleState(vel1, ParticleType.ShipExhaust));
-        GameCore.ParticleManager.CreateParticle(Art.LineParticle, pos, Color.White * ALPHA, 60f, new Vector2(0.5f, 1),new ParticleState(vel2, ParticleType.ShipExhaust));
+        GameCore.ParticleManager.CreateParticle(Art.LineParticle, pos, Color.White*ALPHA, 60f, new Vector2(0.5f, 1), new ParticleState(vel1, ParticleType.ShipExhaust));
+        GameCore.ParticleManager.CreateParticle(Art.LineParticle, pos, Color.White*ALPHA, 60f, new Vector2(0.5f, 1), new ParticleState(vel2, ParticleType.ShipExhaust));
 
-        GameCore.ParticleManager.CreateParticle(Art.Glow, pos, sideColor * ALPHA, 60f, new Vector2(0.5f, 1),new ParticleState(vel1, ParticleType.ShipExhaust));
-        GameCore.ParticleManager.CreateParticle(Art.Glow, pos, sideColor * ALPHA, 60f, new Vector2(0.5f, 1),new ParticleState(vel2, ParticleType.ShipExhaust));
-
+        GameCore.ParticleManager.CreateParticle(Art.Glow, pos, sideColor*ALPHA, 60f, new Vector2(0.5f, 1), new ParticleState(vel1, ParticleType.ShipExhaust));
+        GameCore.ParticleManager.CreateParticle(Art.Glow, pos, sideColor*ALPHA, 60f, new Vector2(0.5f, 1), new ParticleState(vel2, ParticleType.ShipExhaust));
       }
-
     }
 
     private void clampVelocity()
@@ -285,14 +291,14 @@ namespace Asteroids.Entities.Player
 
     private Vector2 applyFriction()
     {
-      return (Velocity.Length() > 0 ? -Velocity*FRICTION_FACTOR : new Vector2(0, 0));
+      return Velocity.Length() > 0 ? -Velocity*FRICTION_FACTOR : new Vector2(0, 0);
     }
 
     private Vector2 applyThrust(float f)
     {
       var tThrust = MAX_THRUST*f;
 
-      var thrustDirection = new Vector2((float)(-tThrust * Math.Sin(Rotation - ANGLE180)), (float)(tThrust * Math.Cos(Rotation - ANGLE180)));
+      var thrustDirection = new Vector2((float) (-tThrust*Math.Sin(Rotation - ANGLE180)), (float) (tThrust*Math.Cos(Rotation - ANGLE180)));
       var acc = new Vector2(Acceleration.X + thrustDirection.X, Acceleration.Y + thrustDirection.Y);
 
       return acc.Length() > MAX_ACCEL ? Vector2.Normalize(acc)*MAX_ACCEL : acc;
@@ -323,8 +329,17 @@ namespace Asteroids.Entities.Player
       }
     }
 
-    private void handleRotation( TimeSpan elapsedTime)
+    private void handleRotation(TimeSpan elapsedTime)
     {
+      if (InputManager.IsActionPressed(InputManager.Action.RotateRight) || InputManager.IsActionPressed(InputManager.Action.RotateLeft))
+      {
+        rotateHoldTimer += elapsedTime.TotalSeconds;
+      }
+      else
+      {
+        rotateHoldTimer = 0.0;
+      }
+
       if (InputManager.IsActionPressed(InputManager.Action.RotateRight))
         spin -= 0.1f;
       else if (InputManager.IsActionPressed(InputManager.Action.RotateLeft))
@@ -336,8 +351,8 @@ namespace Asteroids.Entities.Player
         spin = 0;
       else
       {
-        spin = Math.Min(spin, 4f);
-        spin = Math.Max(spin, -4f);
+        spin = Math.Min(spin, 9f);
+        spin = Math.Max(spin, -9f);
       }
 
       Rotation -= (float) (spin*elapsedTime.TotalSeconds*3.0);
@@ -349,26 +364,56 @@ namespace Asteroids.Entities.Player
       if (blasterNotReady()) return false;
 
       lastLaserFire = DateTime.Now;
-
       var rotationZ = Matrix.CreateRotationZ(Rotation - MathHelper.Pi);
       var laserStartAngle = new Vector2(0, 1) + rand.NextVector2(0, 0.2f);
       var trajectory = Vector2.Transform(laserStartAngle, rotationZ);
       var position = Position + Vector2.Transform(new Vector2(0, 20), rotationZ);
 
-      var shot = new Laser(position, trajectory);
-      EntityManager.Add(shot);
-      
-      if (isMultiShootActive())
+      if (isRoundShotActive())
       {
-        var trajectory1 = Vector2.Transform(laserStartAngle, Matrix.CreateRotationZ(Rotation - (MathHelper.Pi-MathHelper.ToRadians(30))));
-        var shot1 = new Laser(position, trajectory1);
-        EntityManager.Add(shot1);
+        var shot = new Laser(Position, trajectory);
+        EntityManager.Add(shot);
 
-        var trajectory2 = Vector2.Transform(laserStartAngle, Matrix.CreateRotationZ(Rotation - (MathHelper.Pi-MathHelper.ToRadians(-30))));
-        var shot2 = new Laser(position, trajectory2);
-        EntityManager.Add(shot2);
+        for (int x = 0; x <= 180; x += 30)
+        {
+          var matrix1 = Matrix.CreateRotationZ(Rotation - (MathHelper.Pi - MathHelper.ToRadians(x)));
+          var trajectory1 = Vector2.Transform(laserStartAngle, matrix1);
+          var position1 = Position + Vector2.Transform(new Vector2(0, 40), matrix1);
+          var shot1 = new Laser(position1, trajectory1);
+          EntityManager.Add(shot1);
+
+          var matrix2 = Matrix.CreateRotationZ(Rotation - (MathHelper.Pi - MathHelper.ToRadians(-x)));
+          trajectory1 = Vector2.Transform(laserStartAngle, matrix2);
+          var position2 = Position + Vector2.Transform(new Vector2(0, 40), matrix2);
+          shot1 = new Laser(position2, trajectory1);
+          EntityManager.Add(shot1);
+        }
+
       }
+      else
+      {
+        var shot = new Laser(position, trajectory);
+        EntityManager.Add(shot);
+
+        if (isMultiShootActive())
+        {
+          var trajectory1 = Vector2.Transform(laserStartAngle, Matrix.CreateRotationZ(Rotation - (MathHelper.Pi - MathHelper.ToRadians(30))));
+          var shot1 = new Laser(position, trajectory1);
+          EntityManager.Add(shot1);
+
+          var trajectory2 = Vector2.Transform(laserStartAngle, Matrix.CreateRotationZ(Rotation - (MathHelper.Pi - MathHelper.ToRadians(-30))));
+          var shot2 = new Laser(position, trajectory2);
+          EntityManager.Add(shot2);
+        }
+
+      }
+
       return true;
+    }
+
+    private bool isRoundShotActive()
+    {
+      return activePowerups.Any(p => p.Type == PowerUpTypes.RoundShot);
     }
 
     private bool isMultiShootActive()
@@ -383,40 +428,40 @@ namespace Asteroids.Entities.Player
 
     private bool blasterNotReady()
     {
-      var elapsed = (DateTime.Now - lastLaserFire);
-      return elapsed < TimeSpan.FromSeconds(0.05);
+      var elapsed = DateTime.Now - lastLaserFire;
+      return elapsed < TimeSpan.FromSeconds(0.05 + rotateHoldTimer*0.05);
     }
 
     public void AddPowerup(PowerUp powerUp)
     {
-      activePowerups.Add(powerUp);     
+      activePowerups.Add(powerUp);
     }
 
     public void NewLifeParticles()
     {
-      for (int i = 0; i <= 26; i++)
+      for (var i = 0; i <= 26; i++)
       {
-        float rads = (float)(rand.NextDouble() * MathHelper.TwoPi);
-        Vector2 offset = new Vector2((float)Math.Cos(rads) * 20, (float)Math.Sin(rads) * 20);
+        var rads = (float) (rand.NextDouble()*MathHelper.TwoPi);
+        var offset = new Vector2((float) Math.Cos(rads)*20, (float) Math.Sin(rads)*20);
         const float ALPHA = 1f;
         var shieldVelocity = rand.NextVector2(0, 1);
-        GameCore.ParticleManager.CreateParticle(Art.LineParticle, Position + offset + rand.NextVector2(-2,2), Color.White * ALPHA, 60f, new Vector2(2.5f, 2.5f), new ParticleState(shieldVelocity, ParticleType.Shield));
-        GameCore.ParticleManager.CreateParticle(Art.LineParticle, Position + offset + rand.NextVector2(-2, 2), Color.Yellow * ALPHA, 60f, new Vector2(2.5f, 2.5f), new ParticleState(shieldVelocity, ParticleType.Shield));
-        GameCore.ParticleManager.CreateParticle(Art.LineParticle, Position + offset + rand.NextVector2(-2, 2), Color.Gold * ALPHA, 60f, new Vector2(2.5f, 2.5f), new ParticleState(shieldVelocity, ParticleType.Shield));
+        GameCore.ParticleManager.CreateParticle(Art.LineParticle, Position + offset + rand.NextVector2(-2, 2), Color.White*ALPHA, 60f, new Vector2(2.5f, 2.5f), new ParticleState(shieldVelocity, ParticleType.Shield));
+        GameCore.ParticleManager.CreateParticle(Art.LineParticle, Position + offset + rand.NextVector2(-2, 2), Color.Yellow*ALPHA, 60f, new Vector2(2.5f, 2.5f), new ParticleState(shieldVelocity, ParticleType.Shield));
+        GameCore.ParticleManager.CreateParticle(Art.LineParticle, Position + offset + rand.NextVector2(-2, 2), Color.Gold*ALPHA, 60f, new Vector2(2.5f, 2.5f), new ParticleState(shieldVelocity, ParticleType.Shield));
       }
     }
 
     public void NewShieldParticles()
     {
-      for (int i = 0; i <= 26; i++)
+      for (var i = 0; i <= 26; i++)
       {
-        float rads = (float)(rand.NextDouble() * MathHelper.TwoPi);
-        Vector2 offset = new Vector2((float)Math.Cos(rads) * 20, (float)Math.Sin(rads) * 20);
+        var rads = (float) (rand.NextDouble()*MathHelper.TwoPi);
+        var offset = new Vector2((float) Math.Cos(rads)*20, (float) Math.Sin(rads)*20);
         const float ALPHA = 1f;
         var shieldVelocity = rand.NextVector2(0, 1);
-        GameCore.ParticleManager.CreateParticle(Art.LineParticle, Position + offset + rand.NextVector2(-2, 2), Color.Blue * ALPHA, 60f, new Vector2(2.5f, 2.5f), new ParticleState(shieldVelocity, ParticleType.Shield));
-        GameCore.ParticleManager.CreateParticle(Art.LineParticle, Position + offset + rand.NextVector2(-2, 2), Color.Yellow * ALPHA, 60f, new Vector2(2.5f, 2.5f), new ParticleState(shieldVelocity, ParticleType.Shield));
-        GameCore.ParticleManager.CreateParticle(Art.LineParticle, Position + offset + rand.NextVector2(-2, 2), Color.Gold * ALPHA, 60f, new Vector2(2.5f, 2.5f), new ParticleState(shieldVelocity, ParticleType.Shield));
+        GameCore.ParticleManager.CreateParticle(Art.LineParticle, Position + offset + rand.NextVector2(-2, 2), Color.Blue*ALPHA, 60f, new Vector2(2.5f, 2.5f), new ParticleState(shieldVelocity, ParticleType.Shield));
+        GameCore.ParticleManager.CreateParticle(Art.LineParticle, Position + offset + rand.NextVector2(-2, 2), Color.Yellow*ALPHA, 60f, new Vector2(2.5f, 2.5f), new ParticleState(shieldVelocity, ParticleType.Shield));
+        GameCore.ParticleManager.CreateParticle(Art.LineParticle, Position + offset + rand.NextVector2(-2, 2), Color.Gold*ALPHA, 60f, new Vector2(2.5f, 2.5f), new ParticleState(shieldVelocity, ParticleType.Shield));
       }
     }
   }

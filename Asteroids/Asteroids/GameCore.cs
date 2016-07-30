@@ -38,6 +38,7 @@ namespace Asteroids
       graphics = new GraphicsDeviceManager(this);
       Content.RootDirectory = "Content";
 
+      IsMouseVisible = false;
       graphics.PreferredBackBufferWidth = 1920;
       graphics.PreferredBackBufferHeight = 1080;
     }
@@ -72,6 +73,8 @@ namespace Asteroids
 
       EntityManager.Add(new Starfield());
       EntityManager.Add(Ship.Instance);
+      EntityManager.Add(new HealthBar());
+
 
       song = Song.FromUri("Music", new Uri("content/Music.mp3", UriKind.Relative));
       MediaPlayer.IsRepeating = true;

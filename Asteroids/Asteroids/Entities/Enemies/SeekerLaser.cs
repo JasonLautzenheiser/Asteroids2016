@@ -5,7 +5,7 @@ namespace Asteroids.Entities.Enemies
 {
   public class SeekerLaser : Entity
   {
-    private const int SPEED = 8;
+    private const int SPEED = 12;
 
     public SeekerLaser(Vector2 position, Vector2 velocity)
     {
@@ -13,6 +13,7 @@ namespace Asteroids.Entities.Enemies
       Position = position;
       Velocity = Vector2.Normalize(velocity) * SPEED;
       Rotation = Velocity.ToAngle();
+      Damage = 25;
       DrawPriority = 1;
     }
 

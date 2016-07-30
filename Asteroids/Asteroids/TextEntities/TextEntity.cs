@@ -2,6 +2,7 @@
 using Asteroids.Entities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended.BitmapFonts;
 
 namespace Asteroids.TextEntities
 {
@@ -18,7 +19,7 @@ namespace Asteroids.TextEntities
 
     public string Name = "";
     protected Color Color = Color.White;
-    protected SpriteFont Font = Asteroids.Font.MainFont;
+    protected BitmapFont Font = Asteroids.Font.MainFont;
     protected Vector2 Position { get; set; }
     public bool TempText { get; set; }
     protected internal double TTL = 1.0;

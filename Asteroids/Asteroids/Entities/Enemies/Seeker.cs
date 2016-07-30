@@ -16,9 +16,10 @@ namespace Asteroids.Entities.Enemies
     {
       Texture = Art.Seeker;
       Radius = Texture.Width / 2.0f;
-      PointValue = 5;
+      PointValue = 10;
       DrawPriority = 1;
       Mass = 1f;
+      Damage = 75;
       Position = position;
       AddBehaviour(followPlayer(.05f));
       AddBehaviour(fireMissile());
@@ -28,7 +29,7 @@ namespace Asteroids.Entities.Enemies
     {
       while (true)
       {
-        if (rand.Next(0,150)==7)
+        if (rand.Next(0,50)==7)
         {
           var trajectory = (Ship.Instance.Position - Position).ScaleTo(1.0f);
           var shot = new SeekerLaser(Position, trajectory);
@@ -45,8 +46,6 @@ namespace Asteroids.Entities.Enemies
       {
           Velocity += (Ship.Instance.Position - Position).ScaleTo(acceleration);
           Velocity = MathUtilities.ClampVelocity(Velocity, 7f);
-//          if (Velocity != Vector2.Zero)
-//            Rotation = Velocity.ToAngle();
         yield return 0;
       }
     }

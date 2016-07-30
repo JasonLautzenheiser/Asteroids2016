@@ -19,6 +19,8 @@ namespace Asteroids
     public static Texture2D PowerUpThreeWay { get; private set; }
     public static Texture2D PowerUpNuke { get; private set; }
     public static Texture2D PowerUpShield { get; private set; }
+    public static Texture2D PowerUpHealth { get; private set; }
+    public static Texture2D PowerUpRoundShot { get; private set; }
 
     public static void Load(ContentManager content)
     {
@@ -35,6 +37,8 @@ namespace Asteroids
       PowerUpLife = content.Load<Texture2D>(@"Powerups\extralife-pu");
       PowerUpNuke = content.Load<Texture2D>(@"Powerups\nuke-pu");
       PowerUpShield = content.Load<Texture2D>(@"Powerups\shield-pu");
+      PowerUpHealth = content.Load<Texture2D>(@"Powerups\health-pu");
+      PowerUpRoundShot = content.Load<Texture2D>(@"Powerups\roundshot-pu");
 
       Background = new Texture2D(GameCore.Instance.GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
       Background.SetData(new[] { Color.White });

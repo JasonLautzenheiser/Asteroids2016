@@ -76,5 +76,12 @@ namespace Asteroids
       if (ShieldsLeft < ShieldsPerLife)
         ShieldsLeft++;
     }
+
+    public static void AddHealth(int i)
+    {
+      Ship.Instance.CurrentHealth += i;
+      if (Ship.Instance.CurrentHealth > Ship.Instance.MaxHealth)
+        Ship.Instance.CurrentHealth = Ship.Instance.MaxHealth;
+    }
   }
 }

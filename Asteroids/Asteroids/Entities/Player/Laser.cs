@@ -12,7 +12,7 @@ namespace Asteroids.Entities.Player
       Position = position;
       Velocity = Vector2.Normalize(velocity) * SPEED;
       Rotation = Velocity.ToAngle();
-      DrawPriority = 1;
+      DrawPriority = 11;
     }
 
     public override void Update()

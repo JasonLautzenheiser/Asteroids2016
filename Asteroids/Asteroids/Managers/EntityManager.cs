@@ -102,7 +102,10 @@ namespace Asteroids.Managers
         {
           if (!Ship.Instance.AreShieldsUp)
           {
-            killPlayer();
+            enemy.WasShot();
+            Ship.Instance.CurrentHealth -= enemy.Damage;
+            if (Ship.Instance.CurrentHealth <= 0)
+              killPlayer();
             break;
           }
           enemy.HandleCollision(Ship.Instance);
@@ -122,7 +125,10 @@ namespace Asteroids.Managers
         {
           if (!Ship.Instance.AreShieldsUp)
           {
-            killPlayer();
+            laser.Die();
+            Ship.Instance.CurrentHealth -= laser.Damage;
+            if (Ship.Instance.CurrentHealth <= 0)
+              killPlayer();
             break;
           }
           else
@@ -151,10 +157,11 @@ namespace Asteroids.Managers
     {
       if (!PlayerStatus.GodMode)
       {
-        Ship.Instance.Kill();
-        PowerUps.ForEach(x=>x.ReadyToRemove=true);
-        EnemySpawner.Reset();
         Enemies.ForEach(x => x.PlayerDeath());
+        Ship.Instance.Kill();
+        PowerUps.ForEach(x=>x.Die());
+        entities.OfType<SeekerLaser>().ToList().ForEach(p => p.Die());
+        EnemySpawner.Reset();
       }
     }
 

@@ -14,6 +14,7 @@ namespace Asteroids.Entities.Enemies
       PointValue = 3;
       DrawPriority = 1;
       Mass = 1f;
+      Damage = 50;
       Position = position;
       AddBehaviour(moveRandomly());
     }

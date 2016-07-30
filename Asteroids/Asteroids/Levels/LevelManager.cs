@@ -26,7 +26,7 @@ namespace Asteroids.Levels
     {
       levels.Add(new Level
       {
-        Number = 1,
+        Number = 3,
         EnemiesAllowed = new List<LevelEnemy>
         {
           new LevelEnemy { EnemyType = typeof(Wanderer), MaxNumber = 20, SpawnRate = 2.0f, AutoSpawn = true},
@@ -35,12 +35,12 @@ namespace Asteroids.Levels
 
       levels.Add(new Level
       {
-        Number = 3,
+        Number = 1,
         EnemiesAllowed = new List<LevelEnemy>
         {
-          new LevelEnemy { EnemyType = typeof(Wanderer), MaxNumber = 20, SpawnRate = 2.0f, AutoSpawn = true},
+          new LevelEnemy { EnemyType = typeof(Wanderer), MaxNumber = 50, SpawnRate = 0.5f, AutoSpawn = true},
           new LevelEnemy { EnemyType = typeof(MiniWanderer), MaxNumber = 10, AutoSpawn = false},
-          new LevelEnemy { EnemyType = typeof(Seeker), MaxNumber = 5, SpawnRate = 5.0f, AutoSpawn = true},
+          new LevelEnemy { EnemyType = typeof(Seeker), MaxNumber = 30, SpawnRate = 2.0f, AutoSpawn = true},
         }
       });
 
@@ -60,8 +60,9 @@ namespace Asteroids.Levels
     public static Level LoadLevel(int number)
     {
       var levelFound = levels.FirstOrDefault(p => p.Number == number);
-      CurrentLevel = levelFound;
-      return levelFound;
+      if (levelFound != null)
+        CurrentLevel = levelFound;
+      return CurrentLevel;
     }
 
     public static void Update()

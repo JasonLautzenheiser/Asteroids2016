@@ -62,6 +62,7 @@
     <Compile Include="Entities\Enemies\SeekerLaser.cs" />
     <Compile Include="Entities\Enemies\Wanderer.cs" />
     <Compile Include="Entities\Entity.cs" />
+    <Compile Include="Entities\Player\HealthBar.cs" />
     <Compile Include="Entities\Player\Laser.cs" />
     <Compile Include="Entities\Player\Ship.cs" />
     <Compile Include="Entities\Starfield.cs" />
@@ -80,9 +81,11 @@
     <Compile Include="ParticleState.cs" />
     <Compile Include="PlayerStatus.cs" />
     <Compile Include="Powerups\ExtraLife.cs" />
+    <Compile Include="Powerups\Health.cs" />
     <Compile Include="Powerups\Nuke.cs" />
     <Compile Include="Powerups\PowerUp.cs" />
     <Compile Include="Powerups\PowerUpSpawner.cs" />
+    <Compile Include="Powerups\RoundShot.cs" />
     <Compile Include="Powerups\Shield.cs" />
     <Compile Include="Powerups\ThreeWayShooter.cs" />
     <Compile Include="Program.cs" />
@@ -101,6 +104,9 @@
     <Compile Include="Utilities\TypeExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="MonoGame.Extended">
+      <HintPath>..\lib\MonoGame.Extended.dll</HintPath>
+    </Reference>
     <Reference Include="MonoGame.Framework">
       <HintPath>$(MonoGameInstallDirectory)\MonoGame\v3.0\Assemblies\Windows\MonoGame.Framework.dll</HintPath>
     </Reference>
@@ -127,6 +133,7 @@
     <Content Include="Content\Powerups\shield-pu.png" />
     <Content Include="Content\rockSmall.png" />
     <Content Include="Icon.ico" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />
